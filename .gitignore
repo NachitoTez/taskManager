@@ -4,7 +4,7 @@
 ### Java ###
 # Compiled class file
 *.class
-.idea
+backend/.idea
 
 # Log file
 *.log
@@ -23,6 +23,7 @@
 *.zip
 *.tar.gz
 *.rar
+*.xml
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
@@ -37,9 +38,9 @@ pom.xml.next
 release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
-.mvn/timing.properties
+backend/.mvn/timing.properties
 # https://github.com/takari/maven-wrapper#usage-without-binary-jar
-.mvn/wrapper/maven-wrapper.jar
+backend/.mvn/wrapper/maven-wrapper.jar
 
 # Eclipse m2e generated files
 # Eclipse Core
