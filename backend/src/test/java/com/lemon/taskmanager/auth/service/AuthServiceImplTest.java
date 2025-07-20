@@ -30,7 +30,6 @@ class AuthServiceImplTest {
 
     @Test
     void login_ShouldReturnToken_WhenCredentialsAreValid() {
-        // Arrange
         String username = "anakin.skywalker";
         String rawPassword = "iAmTheChosenOne";
         String encodedPassword = "$2a$10$hashedPasswordFromTheDarkSide";
@@ -38,7 +37,8 @@ class AuthServiceImplTest {
 
         User user = new User();
         user.setUsername(username);
-//        user.setPassword(encodedPassword);
+        //TODO esto lo cambio seguro
+        user.setPassword(encodedPassword);
 
         when(userService.findByUsername(username)).thenReturn(user);
         when(passwordEncoder.matches(rawPassword, encodedPassword)).thenReturn(true);
@@ -46,10 +46,8 @@ class AuthServiceImplTest {
 
         AuthRequest request = new AuthRequest(username, rawPassword);
 
-        // Act
         AuthResponse response = authService.login(request);
 
-        // Assert
         assertNotNull(response);
         assertEquals(expectedToken, response.token());
         verify(userService).findByUsername(username);
