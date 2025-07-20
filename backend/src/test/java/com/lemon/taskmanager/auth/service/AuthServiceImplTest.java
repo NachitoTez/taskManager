@@ -1,0 +1,60 @@
+package com.lemon.taskmanager.auth.service;
+
+import com.lemon.taskmanager.auth.dto.AuthRequest;
+import com.lemon.taskmanager.auth.dto.AuthResponse;
+import com.lemon.taskmanager.user.model.User;
+import com.lemon.taskmanager.user.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+class AuthServiceImplTest {
+
+    private AuthServiceImpl authService;
+
+    private UserService userService;
+    private PasswordEncoder passwordEncoder;
+    private JwtService jwtService;
+
+    @BeforeEach
+    void setUp() {
+        userService = mock(UserService.class);
+        passwordEncoder = mock(PasswordEncoder.class);
+        jwtService = mock(JwtService.class);
+
+        authService = new AuthServiceImpl(userService, passwordEncoder, jwtService);
+    }
+
+    @Test
+    void login_ShouldReturnToken_WhenCredentialsAreValid() {
+        // Arrange
+        String username = "anakin.skywalker";
+        String rawPassword = "iAmTheChosenOne";
+        String encodedPassword = "$2a$10$hashedPasswordFromTheDarkSide";
+        String expectedToken = "jwt-token-for-darth-vader";
+
+        User user = new User();
+        user.setUsername(username);
+//        user.setPassword(encodedPassword);
+
+        when(userService.findByUsername(username)).thenReturn(user);
+        when(passwordEncoder.matches(rawPassword, encodedPassword)).thenReturn(true);
+        when(jwtService.generateToken(user)).thenReturn(expectedToken);
+
+        AuthRequest request = new AuthRequest(username, rawPassword);
+
+        // Act
+        AuthResponse response = authService.login(request);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(expectedToken, response.token());
+        verify(userService).findByUsername(username);
+        verify(passwordEncoder).matches(rawPassword, encodedPassword);
+        verify(jwtService).generateToken(user);
+    }
+
+}

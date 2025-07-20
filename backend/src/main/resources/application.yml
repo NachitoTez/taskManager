@@ -1,0 +1,5 @@
+#  No me gusta tener esto acá pero para facilidad de la persona que corra el challenge
+#  va a quedar expuesta
+jwt:
+  secret: VnZwc0tUM2p2c1lYSkxUZ2EzUFJvYmNGZGRjQjRhb0U=
+
