@@ -20,6 +20,11 @@ spring:
     init:
       mode: always
 
+logging:
+  level:
+    root: INFO
+    com.lemon.taskmanager: INFO
+
 
 server:
   port: 8081
