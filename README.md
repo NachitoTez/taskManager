@@ -16,6 +16,13 @@ Para poder correr el proyecto localmente se recomienda tener instalado:
 
 Este proyecto incluye un `Makefile` para facilitar el inicio tanto del backend como del frontend.
 
+### ▶️ Build
+
+🔧 Construye el backend y prepara el frontend para ejecutarse.
+```bash
+make build
+```
+
 ### ▶️ Backend
 
 ```bash

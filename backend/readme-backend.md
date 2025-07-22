@@ -20,7 +20,7 @@ src/main/java/com/lemon/taskmanager
 ├── config/              # Configuración de seguridad (SecurityFilterChain, CORS)
 ├── exceptions/          # Manejador global y errores personalizados
 ├── tasks/               # Endpoints y lógica para manejar tareas
-├── user/                # Entidad User y acceso a datos
+├── userEntity/                # Entidad User y acceso a datos
 ├── utils/               # Clases auxiliares (ej. métodos JWT)
 └── TaskmanagerApplication.java
 ```

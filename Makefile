@@ -1,5 +1,9 @@
+build:
+	cd backend && ./mvnw clean install
+	cd frontend && npm install
+
 run-backend:
-	cd backend && ./mvnw clean install && ./mvnw spring-boot:run
+	cd backend && ./mvnw spring-boot:run
 
 run-frontend:
-	cd frontend && npm install && npm run dev
+	cd frontend && npm run dev
