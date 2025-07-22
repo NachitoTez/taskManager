@@ -4,7 +4,7 @@ import com.lemon.taskmanager.auth.dto.AuthRequest;
 import com.lemon.taskmanager.auth.dto.AuthResponse;
 import com.lemon.taskmanager.auth.dto.RegisterRequest;
 import com.lemon.taskmanager.exceptions.UsernameAlreadyTakenException;
-import com.lemon.taskmanager.user.model.User;
+import com.lemon.taskmanager.user.model.UserEntity;
 import com.lemon.taskmanager.user.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,13 +26,14 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponse login(AuthRequest request) {
-        User user = userService.findByUsername(request.username());
+        UserEntity userEntity = userService.findByUsername(request.username());
 
-        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
+        if (!passwordEncoder.matches(request.password(), userEntity.getPassword())) {
             throw new IllegalArgumentException("Invalid credentials");
         }
+        //TODO acá podría mapear a mi nuevo user de dominio para nunca más tocar este userEntity
 
-        String token = jwtService.generateToken(user);
+        String token = jwtService.generateToken(userEntity);
 
         return new AuthResponse(token);
     }
@@ -44,10 +45,10 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String hashedPassword = passwordEncoder.encode(request.password());
-        User newUser = new User(request.username(), hashedPassword);
-        User savedUser = userService.save(newUser);
+        UserEntity newUserEntity = new UserEntity(request.username(), hashedPassword);
+        UserEntity savedUserEntity = userService.save(newUserEntity);
 
-        String token = jwtService.generateToken(savedUser);
+        String token = jwtService.generateToken(savedUserEntity);
         return new AuthResponse(token);
     }
 

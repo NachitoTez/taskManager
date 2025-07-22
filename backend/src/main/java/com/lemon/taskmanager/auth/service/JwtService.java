@@ -1,6 +1,6 @@
 package com.lemon.taskmanager.auth.service;
 
-import com.lemon.taskmanager.user.model.User;
+import com.lemon.taskmanager.user.model.UserEntity;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -17,9 +17,9 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    public String generateToken(User user) {
+    public String generateToken(UserEntity userEntity) {
         return Jwts.builder()
-                .setSubject(user.getUsername())
+                .setSubject(userEntity.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 15 * 60 * 1000)) // 15 minutos
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)

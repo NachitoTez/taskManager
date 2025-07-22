@@ -27,4 +27,10 @@ public class GlobalExceptionHandler {
                 .body(ex.getMessage());
     }
 
+    @ExceptionHandler(TaskAssignmentNotAllowedException.class)
+    public ResponseEntity<String> handleAssignmentDenied(TaskAssignmentNotAllowedException ex) {
+        LOGGER.warn("Assignment denied: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+    }
+
 }

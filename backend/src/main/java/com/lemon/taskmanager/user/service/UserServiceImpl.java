@@ -1,7 +1,7 @@
 package com.lemon.taskmanager.user.service;
 
 import com.lemon.taskmanager.exceptions.UserNotFoundException;
-import com.lemon.taskmanager.user.model.User;
+import com.lemon.taskmanager.user.model.UserEntity;
 import com.lemon.taskmanager.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByUsername(String username) {
+    public UserEntity findByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
     }
@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User save(User user) {
-        return userRepository.save(user);
+    public UserEntity save(UserEntity userEntity) {
+        return userRepository.save(userEntity);
     }
 }
