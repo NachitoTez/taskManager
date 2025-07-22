@@ -6,24 +6,15 @@ Aplicación de gestión de tareas con autenticación.
 
 ## 🚀 Cómo correr el proyecto
 
-Este proyecto usa **Maven Wrapper**, por lo tanto no necesitás tener Maven instalado globalmente.
-
-### 🔧 Compilar y levantar el backend
-
-#### En macOS / Linux:
-```bash
-./mvnw clean install
-./mvnw spring-boot:run
-```
-
-#### En Windows:
-```bash
-mvnw.cmd clean install
-mvnw.cmd spring-boot:run
-```
+Cree un makefile para que sea tan sencillo como tocar dos botones.
+Si no tienen el plugin: En la terminal parados en taskManager hacen make run-backend, y en otra terminal make run-frontend.
+Esto hace un install + run para el front y back
 
 El backend se iniciará en:  
 `http://localhost:8081`
+
+El frontend se iniciará en:  
+`http://localhost:8080`
 
 ---
 

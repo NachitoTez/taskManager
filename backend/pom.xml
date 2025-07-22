@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.lemon</groupId>
 	<artifactId>taskmanager</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.2.0-SNAPSHOT</version>
 	<name>taskmanager</name>
 	<description>Gestor de tareas</description>
 	<url/>
