@@ -1,5 +1,8 @@
 package com.lemon.taskmanager.tasks.domain;
 
+import com.lemon.taskmanager.exceptions.InvalidReturnFromStatusException;
+import com.lemon.taskmanager.exceptions.InvalidTaskTransitionException;
+import com.lemon.taskmanager.exceptions.TaskAlreadyCompletedException;
 import com.lemon.taskmanager.user.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +23,7 @@ public class TaskStateMachine {
         if (!task.getStatus().canTransitionTo(nextStatus)) {
             LOGGER.warn("{} tried invalid transition from {} to {} on task {}",
                     actor.getUsername(), task.getStatus(), nextStatus, task.getId());
-            throw new IllegalStateException("Invalid transition from " + task.getStatus() + " to " + nextStatus);
+            throw new InvalidTaskTransitionException(task.getStatus().name(), nextStatus.name());
         }
 
         LOGGER.info("{} transitioned task {} from {} to {}", actor.getUsername(),
@@ -30,10 +33,11 @@ public class TaskStateMachine {
         task.setStatus(nextStatus);
     }
 
+    //TODO podría agregar test que pruebe excepecion
     public void moveToBlocked() {
         if (task.getStatus() == TaskStatus.DONE) {
             LOGGER.warn("Attempted to block completed task {}", task.getId());
-            throw new IllegalStateException("Cannot block a completed task");
+            throw new TaskAlreadyCompletedException();
         }
 
         LOGGER.info("{} blocked task {} from status {}", actor.getUsername(), task.getId(), task.getStatus());
@@ -42,10 +46,11 @@ public class TaskStateMachine {
         task.setStatus(TaskStatus.BLOCKED);
     }
 
+    //TODO podría agregar test que pruebe excepecion
     public void returnFromBlocked() {
         if (task.getStatus() != TaskStatus.BLOCKED) {
             LOGGER.warn("Attempted to unblock task {} but it is in status {}", task.getId(), task.getStatus());
-            throw new IllegalStateException("Task is not in BLOCKED state");
+            throw new InvalidReturnFromStatusException(task.getStatus());
         }
 
         LOGGER.info("{} unblocked task {}, returning to {}", actor.getUsername(), task.getId(), task.getPreviousStatus());
@@ -54,10 +59,11 @@ public class TaskStateMachine {
         task.setPreviousStatus(null);
     }
 
+    //TODO podría agregar test que pruebe excepecion
     public void moveToWaitingInfo() {
         if (task.getStatus() == TaskStatus.DONE) {
             LOGGER.warn("Attempted to move completed task {} to WAITING_INFO", task.getId());
-            throw new IllegalStateException("Cannot move a completed task to WAITING_INFO");
+            throw new TaskAlreadyCompletedException();
         }
 
         LOGGER.info("{} set task {} to WAITING_INFO from {}", actor.getUsername(), task.getId(), task.getStatus());
@@ -66,10 +72,11 @@ public class TaskStateMachine {
         task.setStatus(TaskStatus.WAITING_INFO);
     }
 
+    //TODO podría agregar test que pruebe excepecion
     public void returnFromWaitingInfo() {
         if (task.getStatus() != TaskStatus.WAITING_INFO) {
             LOGGER.warn("Attempted to return task {} from WAITING_INFO but was in {}", task.getId(), task.getStatus());
-            throw new IllegalStateException("Task is not in WAITING_INFO state");
+            throw new InvalidReturnFromStatusException(task.getStatus());
         }
 
         LOGGER.info("{} restored task {} to {}", actor.getUsername(), task.getId(), task.getPreviousStatus());

@@ -14,7 +14,7 @@ Este backend fue desarrollado como parte del challenge técnico de Lemon, utiliz
 
 ## 📁 Estructura del proyecto
 
-```bash
+```
 src/main/java/com/lemon/taskmanager
 ├── auth/                # Login, registro, JWT, AuthController
 ├── config/              # Configuración de seguridad (SecurityFilterChain, CORS)

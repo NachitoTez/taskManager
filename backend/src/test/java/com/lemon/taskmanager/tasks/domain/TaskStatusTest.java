@@ -1,5 +1,6 @@
 package com.lemon.taskmanager.tasks.domain;
 
+import com.lemon.taskmanager.exceptions.InvalidTaskTransitionException;
 import com.lemon.taskmanager.user.domain.User;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +27,7 @@ class TaskStatusTest {
         Task task = TaskTestFactory.simpleTask(TaskStatus.IN_PROGRESS, tarkin, vader);
         TaskStateMachine sm = new TaskStateMachine(task, anakin);
 
-        assertThrows(IllegalStateException.class, () -> sm.transitionTo(TaskStatus.DONE));
+        assertThrows(InvalidTaskTransitionException.class, () -> sm.transitionTo(TaskStatus.DONE));
     }
 
     @Test

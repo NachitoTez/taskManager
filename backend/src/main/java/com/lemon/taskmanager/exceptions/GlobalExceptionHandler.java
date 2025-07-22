@@ -33,4 +33,23 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
     }
 
+    @ExceptionHandler(InvalidTaskTransitionException.class)
+    public ResponseEntity<String> handleInvalidTransition(InvalidTaskTransitionException ex) {
+        LOGGER.warn("Invalid task transition: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(TaskAlreadyCompletedException.class)
+    public ResponseEntity<String> handleTaskAlreadyCompleted(TaskAlreadyCompletedException ex) {
+        LOGGER.warn("Attempted to modify completed task: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(InvalidReturnFromStatusException.class)
+    public ResponseEntity<String> handleInvalidReturnFromStatus(InvalidReturnFromStatusException ex) {
+        LOGGER.warn("Invalid return from task status: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+
 }
