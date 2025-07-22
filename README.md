@@ -1,129 +1,129 @@
-# 📋 taskManager
+# 📝 taskManager
 
-Aplicación de gestión de tareas con autenticación.
+Aplicación full stack para gestión colaborativa de tareas.
 
----
+## 📦 Requisitos
 
-## 🚀 Cómo correr el proyecto
+Para poder correr el proyecto localmente se recomienda tener instalado:
 
-Cree un makefile para que sea tan sencillo como tocar dos botones.
-Si no tienen el plugin: En la terminal parados en taskManager hacen make run-backend, y en otra terminal make run-frontend.
-Esto hace un install + run para el front y back
-
-El backend se iniciará en:  
-`http://localhost:8081`
-
-El frontend se iniciará en:  
-`http://localhost:8080`
+- **Java 21**
+- **Node.js 20.17+** (idealmente 20.17 o 20.19 para evitar errores de compatibilidad con Vite)
+- **Make** (opcional pero les facilitaría correr las apps)
 
 ---
 
-## 🔐 Endpoints de autenticación
+## 🚀 Iniciar el proyecto
 
-### ➕ POST `/auth/register`
+Este proyecto incluye un `Makefile` para facilitar el inicio tanto del backend como del frontend.
 
-Registra un nuevo usuario.
+### ▶️ Backend
 
-**Body JSON**:
-```json
-{
-  "username": "lemon",
-  "password": "EsMejorQueBelo"
-}
-```
-
-**Respuesta**:  
-`200 OK` con token JWT:
-```json
-{
-  "token": "blabla..."
-}
-```
-
----
-
-### 🔑 POST `/auth/login`
-
-Inicia sesión con usuario registrado.
-
-**Body JSON**:
-```json
-{
-  "username": "lemon",
-  "password": "EsMejorQueBelo"
-}
-```
-
-**Respuesta**:
-```json
-{
-  "token": "blabla..."
-}
-```
-
----
-
-## 📌 Endpoints protegidos
-
-### 🔒 GET `/tasks`
-
-Requiere header de autorización con el token recibido al registrarse o loguearse.
-
-**Headers**:
-```
-Authorization: Bearer <token>
-```
-
-**Respuesta sin token válido**:
-- `401 Unauthorized`: Token inválido o faltante
-- `403 Forbidden`: Usuario autenticado pero sin permisos suficientes
-
----
-
-## 🧪 Tests
-
-Para correr los tests:
 ```bash
+make run-backend
+```
+
+Ejecuta el backend con Spring Boot y lo deja corriendo en:
+
+http://localhost:8081
+
+### ▶️ Frontend
+
+```bash
+make run-frontend
+```
+
+Levanta la interfaz con Vite en modo desarrollo en:
+
+http://localhost:8080
+
+ℹ️ Ambos comandos corren en terminales separadas automáticamente (macOS).
+
+---
+
+## 🧪 Testing
+
+El backend incluye tests de integración que validan:
+
+- Registro de usuarios
+- Login y generación de token
+- Acceso denegado sin token
+- Acceso permitido con token válido
+
+Para correrlos:
+
+```bash
+make test
+# o directamente:
 ./mvnw test
 ```
 
-Hay tests de integración para verificar:
-- Acceso denegado sin token
-- Acceso correcto con token válido
-- Registro y login funcionando correctamente
+---
+
+## 📁 Otros documentos
+
+Este README resume el proyecto a alto nivel.
+
+Para detalles más específicos:
+
+- `frontend/readme-frontend.md`
+- `backend/readme-backend.md`
 
 ---
 
-## 🛠️ Stack tecnológico
 
-- Java 21
-- Spring Boot 3
-- Spring Security
-- JWT (via `jjwt`)
-- Maven Wrapper
-- JUnit 5 + AssertJ
-- Mockito (para tests unitarios)
-- SLF4J + Logback con formato customizado
+## 📌 API Endpoints
 
----
+### 🧑‍💻 Autenticación
 
-## 🗃️ Configuración útil
+#### POST `/auth/register`
 
-**Puerto por defecto**: `8081`  
-Se puede cambiar en `src/main/resources/application.yml`:
-```yaml
-server:
-  port: 8081
+Registra un nuevo usuario y devuelve un JWT.
+
+```json
+{
+  "username": "lemon",
+  "password": "EsMejorQueBelo"
+}
 ```
 
-**Clave JWT**: No está en un .env para que sea más sencillo de correr para ustedes.
-En cualquier otro caso debería estar como un secret para no quedar expuesta.
-Está definida en `application.yml` como:
-```yaml
-jwt:
-  secret: 
+#### POST `/auth/login`
+
+Inicia sesión y devuelve un JWT válido.
+
+```json
+{
+  "username": "lemon",
+  "password": "EsMejorQueBelo"
+}
 ```
 
+---
+
+### ✅ Tareas
+
+#### GET `/tasks`
+
+Requiere token en el header:
+
+```http
+Authorization: Bearer <token>
+```
+
+- `401 Unauthorized`: Token inválido o ausente.
+- `403 Forbidden`: Usuario autenticado sin permisos (a futuro cuando haya roles).
+- `200 OK`: Lista de tareas del usuario.
 
 ---
-Hecho por Ignacio Ramirez :p
+
+## 🔐 Seguridad
+
+- Los tokens se generan y validan con firma HMAC usando una clave secreta definida en `application.yml`.
+- Actualmente no se usa una base de datos real: los datos son volátiles.
+- En ambientes productivos, la clave JWT debería moverse a un entorno seguro como variables `.env` o secrets del sistema operativo.
+
+---
+
+
+## 🧑‍🎓 Autor
+
+Ignacio Ramírez · [LinkedIn](https://www.linkedin.com/in/ignacio-ramirez-guembe/) · [GitHub](https://github.com/NachitoTez/taskManager)
