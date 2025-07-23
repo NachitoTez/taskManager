@@ -1,135 +1,115 @@
 # 📝 taskManager
 
-Aplicación full stack para gestión colaborativa de tareas.
+Aplicación full stack para la gestión colaborativa de tareas. Incluye autenticación, manejo de roles, componentes, tareas y un modelo de permisos simplificado para demostrar buenas prácticas de arquitectura y seguridad.
+
+---
 
 ## 📦 Requisitos
 
-Para poder correr el proyecto localmente se recomienda tener instalado:
-
 - **Java 21**
-- **Node.js 20.17+** (idealmente 20.17 o 20.19 para evitar errores de compatibilidad con Vite)
-- **Make** (opcional pero les facilitaría correr las apps)
+- **Node.js 20.17+**
+- **Make** (opcional, pero recomendado para ejecutar los comandos)
 
 ---
 
 ## 🚀 Iniciar el proyecto
 
-Este proyecto incluye un `Makefile` para facilitar el inicio tanto del backend como del frontend.
+Este repositorio incluye un `Makefile` para facilitar el arranque del backend y el frontend.
 
-### ▶️ Build
+### ▶️ Build completo
 
-🔧 Construye el backend y prepara el frontend para ejecutarse.
 ```bash
 make build
 ```
 
-### ▶️ Backend
+### ▶️ Solo Backend
 
 ```bash
 make run-backend
 ```
 
-Ejecuta el backend con Spring Boot y lo deja corriendo en:
+Corre el backend con Spring Boot en:
 
-http://localhost:8081
+📍 http://localhost:8081
 
-### ▶️ Frontend
+### ▶️ Solo Frontend
 
 ```bash
 make run-frontend
 ```
 
-Levanta la interfaz con Vite en modo desarrollo en:
+Levanta la app web con Vite en:
 
-http://localhost:8080
+📍 http://localhost:8080
 
-ℹ️ Ambos comandos corren en terminales separadas automáticamente (macOS).
+ℹ️ En macOS se abren automáticamente en terminales separadas.
 
 ---
 
 ## 🧪 Testing
 
-El backend incluye tests de integración que validan:
+El backend contiene tests de integración para:
 
 - Registro de usuarios
-- Login y generación de token
-- Acceso denegado sin token
-- Acceso permitido con token válido
-
-Para correrlos:
+- Login + generación de JWT
+- Accesos autorizados/denegados
+- Operaciones con tareas
 
 ```bash
-make test
-# o directamente:
 ./mvnw test
 ```
 
 ---
 
-## 📁 Otros documentos
+## ⚙️ Arquitectura
 
-Este README resume el proyecto a alto nivel.
+El backend sigue una estructura basada en capas (Controller, Service, Repository, Domain, DTO, Mapper).
 
-Para detalles más específicos:
+El frontend usa **React + Vite**.
 
-- `frontend/readme-frontend.md`
-- `backend/readme-backend.md`
-
----
-
-
-## 📌 API Endpoints
-
-### 🧑‍💻 Autenticación
-
-#### POST `/auth/register`
-
-Registra un nuevo usuario y devuelve un JWT.
-
-```json
-{
-  "username": "lemon",
-  "password": "EsMejorQueBelo"
-}
-```
-
-#### POST `/auth/login`
-
-Inicia sesión y devuelve un JWT válido.
-
-```json
-{
-  "username": "lemon",
-  "password": "EsMejorQueBelo"
-}
-```
+El proyecto está preparado para ser dockerizado y escalar.
 
 ---
 
-### ✅ Tareas
+## 📌 Funcionalidades principales
 
-#### GET `/tasks`
+- Registro y login de usuarios
+- JWT para autenticación
+- Elección de rol (manager o member) al registrarse
+- Asignación y actualización de tareas
+- Control de estados con flujo permitido (ej. `BACKLOG → IN_PROGRESS → TESTING → DONE`)
+- Estados especiales: `BLOCKED` y `WAITING_INFO` que solo permiten volver atrás
+- Permisos granulares:
+  - Cualquiera puede tomar una tarea sin asignado
+  - Solo managers o el actual asignado pueden cambiar la asignación
+  - Solo se ven tareas propias o de proyectos donde el usuario participa
 
-Requiere token en el header:
+---
 
-```http
-Authorization: Bearer <token>
-```
+## 📁 Organización
 
-- `401 Unauthorized`: Token inválido o ausente.
-- `403 Forbidden`: Usuario autenticado sin permisos (a futuro cuando haya roles).
-- `200 OK`: Lista de tareas del usuario.
+Las tareas se agrupan en componentes (TaskComponents) y estos a su vez en proyectos. Esta jerarquía permite estructurar de forma ordenada el trabajo de equipos y usuarios.
+
+El nombre `Component` fue evitado por conflicto con la anotación `@Component` de Spring.
+
+---
+
+## 📚 Más detalles
+
+Para ver más en profundidad:
+
+- `backend/readme-backend.md`: estructura técnica, endpoints, lógica de dominio, testing
+- `frontend/readme-frontend.md`: vistas, navegación, arquitectura de componentes, consumo de ApiInterceptor
 
 ---
 
 ## 🔐 Seguridad
 
-- Los tokens se generan y validan con firma HMAC usando una clave secreta definida en `application.yml`.
-- Actualmente no se usa una base de datos real: los datos son volátiles.
-- En ambientes productivos, la clave JWT debería moverse a un entorno seguro como variables `.env` o secrets del sistema operativo.
+- JWT con HMAC firmados (clave definida en `application.yml`)
+- No hay base de datos persistente, se usa H2 in-memory
+- En producción, las claves deben protegerse mediante variables de entorno
 
 ---
-
 
 ## 🧑‍🎓 Autor
 

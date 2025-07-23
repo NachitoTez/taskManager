@@ -1,10 +1,14 @@
-import { Outlet, Navigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
+import { useAuth } from '../context/useAuth';
+import { LOGGER } from '../services/logger';
 
-// TODO: Reemplazar con validación real del auth context
-const isAuthenticated = false;
+export default function ProtectedLayout() {
+    const { isAuthenticated } = useAuth();
 
-function ProtectedLayout() {
-    return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
+    if (!isAuthenticated) {
+        LOGGER.warn('Intento de acceso a ruta protegida sin login');
+        return <Navigate to="/login" replace />;
+    }
+
+    return <Outlet />;
 }
-
-export default ProtectedLayout;

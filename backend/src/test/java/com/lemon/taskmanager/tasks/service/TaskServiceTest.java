@@ -1,5 +1,6 @@
 package com.lemon.taskmanager.tasks.service;
 
+import com.lemon.taskmanager.exceptions.ComponentNotFoundException;
 import com.lemon.taskmanager.exceptions.TaskAssignmentNotAllowedException;
 import com.lemon.taskmanager.exceptions.TaskNotFoundException;
 import com.lemon.taskmanager.factory.UserTestFactory;
@@ -247,5 +248,15 @@ class TaskServiceTest {
     }
 
 
+    @Test
+    void should_throw_exception_when_component_does_not_exist() {
+        UUID fakeComponentId = UUID.randomUUID();
+        CreateTaskRequest request = TaskTestFactory.createRequestWithoutAssignee(fakeComponentId);
+        User creator = UserTestFactory.managerWithName("vader");
+
+        when(componentRepository.findById(fakeComponentId)).thenReturn(Optional.empty());
+
+        assertThrows(ComponentNotFoundException.class, () -> taskService.createTask(request, creator));
+    }
 
 }

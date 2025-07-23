@@ -111,9 +111,8 @@ public class TaskService {
             assignee = userService.findUserById(request.assigneeId());
         }
 
-        // Crear tarea
         Task task = new Task(
-                null,
+                UUID.randomUUID(),
                 request.title(),
                 request.description(),
                 creator,
@@ -122,7 +121,6 @@ public class TaskService {
         );
         task.setStatus(TaskStatus.BACKLOG);
 
-        // Persistir
         TaskEntity entity = taskMapper.toEntity(task);
         TaskEntity saved = taskRepository.save(entity);
 

@@ -1,75 +1,80 @@
 import {useForm} from 'react-hook-form';
 import {z} from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
-import {useNavigate, Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import {login, register as registerService} from '../../services/authService';
 import './Auth.scss';
 import logo from '../../assets/lemon.svg';
-import {useEffect, useState} from "react";
+import {useState} from 'react';
+import {useAuth} from "../../context/useAuth.ts";
+import {LOGGER} from "../../services/logger.ts";
+
+const baseSchema = z.object({
+    email: z.email('Email inválido'),
+    password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
+});
+
+const registerSchema = baseSchema.extend({
+    confirmPassword: z.string(),
+    role: z.enum(['MEMBER', 'MANAGER']),
+}).refine((data) => data.password === data.confirmPassword, {
+    path: ['confirmPassword'],
+    message: 'Las contraseñas no coinciden',
+});
+
+type LoginForm = z.infer<typeof baseSchema>;
+type RegisterForm = z.infer<typeof registerSchema>;
+type FormData = LoginForm | RegisterForm;
 
 type AuthProps = {
     isLogin: boolean;
 };
 
-const schema = z.object({
-    email: z.email({message: 'Email inválido'}),
-    password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
-});
-
-type FormData = z.infer<typeof schema>;
-
-export default function Auth({isLogin}: AuthProps) {
+export default function Auth({ isLogin }: AuthProps) {
+    const { login: authLogin } = useAuth();
     const navigate = useNavigate();
-
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        setError(null);
-    }, [navigate]);
-
     const {
         register,
         handleSubmit,
-        formState: {errors},
+        formState: { errors },
     } = useForm<FormData>({
-        resolver: zodResolver(schema),
+        resolver: zodResolver(isLogin ? baseSchema : registerSchema),
     });
 
     const onSubmit = async (data: FormData) => {
         setLoading(true);
         try {
-            console.log("enviandooo")
             const payload = {
                 username: data.email,
                 password: data.password,
+                role: 'role' in data ? data.role : "MEMBER",
             };
             const response = isLogin ? await login(payload) : await registerService(payload);
-            localStorage.setItem('token', response.token);
-            console.log("yendo a tasks")
-            navigate('/tasks');
+            authLogin(response.token);
+            if (isLogin) {
+                navigate('/tasks');
+            } else {
+                navigate('/tasks', {
+                    state: {
+                        welcome: '¡Bienvenido/a! 🎉',
+                    },
+                });
+            }
         } catch (err) {
             console.error('Error en autenticación:', err);
-            setError('Hubo un error al autenticar. Verificá tus credenciales o intenta más tarde.');
+            LOGGER.error(`Error en login/register: ${JSON.stringify(err)}`);
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="login-container">
+        <div className="auth-wrapper">
             <img src={logo} alt="Lemon logo" className="logo"/>
-
-            {error && (
-                <div className="toast-error">
-                    <span>{error}</span>
-                    <button onClick={() => setError(null)}>×</button>
-                </div>
-            )}
-
             <div className="login-box">
                 <div className="login-box-title">
-                    <h1>{isLogin ? 'Accedé a tu cuenta' : 'Crea tu cuenta'}</h1>
+                    <h1>{isLogin ? 'Bienvenido/a' : 'Crea tu cuenta'}</h1>
                     <h2>Lemon Task Manager</h2>
                 </div>
                 <div className="login-box-body">
@@ -82,16 +87,45 @@ export default function Auth({isLogin}: AuthProps) {
                             <input type="password" placeholder="Contraseña" {...register('password')} />
                             {errors.password && <span>{errors.password.message}</span>}
                         </div>
-                        {loading ? (
+                        {!isLogin && (
+                            <>
+                                <div>
+                                    <input
+                                        type="password"
+                                        placeholder="Repetir contraseña"
+                                        {...register('confirmPassword')}
+                                    />
+                                    {'confirmPassword' in errors && errors.confirmPassword && (
+                                        <span>{errors.confirmPassword.message}</span>
+                                    )}
+                                </div>
+                                <div className="role-selector">
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            value="MEMBER"
+                                            defaultChecked
+                                            {...register('role')}
+                                        /> Member
+                                    </label>
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            value="MANAGER"
+                                            {...register('role')}
+                                        /> Manager
+                                    </label>
+                                </div>
+                            </>
+                        )}
+
+                        {!loading ? (
+                            <button type="submit">{isLogin ? 'Iniciar sesión' : 'Registrarse'}</button>
+                        ) : (
                             <div className="loader-wrapper">
                                 <span className="spinner"/>
                             </div>
-                        ) : (
-                            <button type="submit">
-                                {isLogin ? 'Iniciar sesión' : 'Registrarse'}
-                            </button>
                         )}
-
                     </form>
                 </div>
                 <div className="login-box-footer">
@@ -106,9 +140,3 @@ export default function Auth({isLogin}: AuthProps) {
         </div>
     );
 }
-
-//TODO cosas por agregar:
-//Confirmar contraseña, condiciones que debe cumplir y validacion en tiempo real
-//Un context
-//Toast para los errores (listo, ahora manejar especificamente cada error)
-//El register en lugar de redirigir a login debería ir a tasks, total ya tiene el token

@@ -1,0 +1,59 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #090a09;
+  color: white;
+  padding: 0.5rem 1rem;
+}
+
+.userArea button {
+  background: rgb(0, 240, 104);
+  border: none;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.container {
+  flex: 1;
+  display: flex;
+  height: 100%;
+}
+
+.sidebar {
+  width: 200px;
+  background-color: #1a1a1a;
+  padding: 1rem;
+  color: white;
+}
+
+.nav ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.nav ul li button {
+  width: 100%;
+  background: none;
+  color: white;
+  border: 1px solid white;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.content {
+  flex-grow: 1;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  overflow-y: auto;
+}

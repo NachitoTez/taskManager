@@ -24,7 +24,7 @@ src/
 │   ├── Auth/              # Componente Auth compartido entre login/register
 │   ├── Login/             # Wrapper para <Auth isLogin />
 │   └── Register/          # Wrapper para <Auth isLogin={false} />
-├── services/              # Llamadas a API externas (authService)
+├── services/              # Llamadas a ApiInterceptor externas (authService)
 ├── styles/                # Estilos globales y variables Sass (variables, globals)
 └── App.tsx                # Router principal
 ```

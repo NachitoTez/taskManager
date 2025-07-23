@@ -71,11 +71,11 @@ public class TaskTestFactory {
         );
     }
 
-    public static CreateTaskRequest createRequestWithoutAssignee(TaskComponent taskComponent) {
+    public static CreateTaskRequest createRequestWithoutAssignee(UUID id) {
         return new CreateTaskRequest(
                 "Calibrate sensors",
                 "Use protocol outlined in imperial manual section 3-B",
-                taskComponent.getId(),
+                id,
                 null
         );
     }

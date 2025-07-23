@@ -1,13 +1,11 @@
-import axios from 'axios';
-
-const API = 'http://localhost:8081';
+import ApiInterceptor from './apiInterceptor.ts';
 
 export const login = async (data: { username: string; password: string }) => {
-    const response = await axios.post(`${API}/auth/login`, data);
+    const response = await ApiInterceptor.post('/auth/login', data);
     return response.data;
 };
 
-export const register = async (data: { username: string; password: string }) => {
-    const response = await axios.post(`${API}/auth/register`, data);
+export const register = async (data: { username: string; password: string; role: string }) => {
+    const response = await ApiInterceptor.post('/auth/register', data);
     return response.data;
 };
