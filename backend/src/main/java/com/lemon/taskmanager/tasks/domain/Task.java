@@ -3,27 +3,29 @@ package com.lemon.taskmanager.tasks.domain;
 import com.lemon.taskmanager.exceptions.TaskAssignmentNotAllowedException;
 import com.lemon.taskmanager.user.domain.User;
 
+import java.util.UUID;
+
 public class Task {
 
-    private final Long id;
+    private final UUID id;
     private final String title;
     private final String description;
     private final User createdBy;
     private User assignedTo;
-    private final Component component;
+    private final TaskComponent taskComponent;
     private TaskStatus status = TaskStatus.BACKLOG;
     private TaskStatus previousStatus;
 
-    public Task(Long id, String title, String description, User createdBy, User assignedTo, Component component) {
+    public Task(UUID id, String title, String description, User createdBy, User assignedTo, TaskComponent taskComponent) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.createdBy = createdBy;
         this.assignedTo = assignedTo;
-        this.component = component;
+        this.taskComponent = taskComponent;
     }
 
-    public Long getId() { return id; }
+    public UUID getId() { return id; }
 
     public String getTitle() { return title; }
 
@@ -33,7 +35,7 @@ public class Task {
 
     public User getAssignedTo() { return assignedTo; }
 
-    public Component getComponent() { return component; }
+    public TaskComponent getComponent() { return taskComponent; }
 
     public TaskStatus getStatus() { return status; }
 
@@ -62,7 +64,7 @@ public class Task {
     public boolean canView(User user) {
         return user.getId().equals(createdBy.getId()) ||
                 (assignedTo != null && user.getId().equals(assignedTo.getId())) ||
-                component.getProject().isMember(user);
+                taskComponent.getProject().isMember(user);
     }
 
 

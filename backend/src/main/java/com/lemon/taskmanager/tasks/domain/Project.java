@@ -4,14 +4,15 @@ import com.lemon.taskmanager.user.domain.User;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 public class Project {
 
-    private final Long id;
+    private final UUID id;
     private final String name;
     private final Set<User> members = new HashSet<>();
 
-    public Project(Long id, String name) {
+    public Project(UUID id, String name) {
         this.id = id;
         this.name = name;
     }

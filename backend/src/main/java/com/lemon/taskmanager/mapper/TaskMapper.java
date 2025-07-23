@@ -8,26 +8,33 @@ import org.springframework.stereotype.Component;
 @Component
 public class TaskMapper {
 
+    private final UserMapper userMapper;
+    private final ComponentMapper componentMapper;
+
+    public TaskMapper(UserMapper userMapper, ComponentMapper componentMapper) {
+        this.userMapper = userMapper;
+        this.componentMapper = componentMapper;
+    }
+
     public Task toDomain(TaskEntity entity) {
         return new Task(
                 entity.getId(),
                 entity.getTitle(),
                 entity.getDescription(),
-                UserMapper.toDomain(entity.getCreatedBy()),
-                UserMapper.toDomain(entity.getAssignedTo()),
-                null //TODO componente por ahora null
+                userMapper.toDomain(entity.getCreatedBy()),
+                entity.getAssignedTo() != null ? userMapper.toDomain(entity.getAssignedTo()) : null,
+                entity.getComponent() != null ? componentMapper.toDomain(entity.getComponent()) : null
         );
     }
-
 
     public TaskEntity toEntity(Task task) {
         return new TaskEntity(
                 task.getTitle(),
                 task.getDescription(),
                 task.getStatus(),
-                UserMapper.toEntity(task.getCreatedBy()),
-                UserMapper.toEntity(task.getAssignedTo()),
-                ComponentMapper.toEntity(task.getComponent())
+                userMapper.toEntity(task.getCreatedBy()),
+                task.getAssignedTo() != null ? userMapper.toEntity(task.getAssignedTo()) : null,
+                task.getComponent() != null ? componentMapper.toEntity(task.getComponent()) : null
         );
     }
 
@@ -39,8 +46,8 @@ public class TaskMapper {
                 task.getStatus(),
                 task.getCreatedBy().getUsername(),
                 task.getAssignedTo() != null ? task.getAssignedTo().getUsername() : null,
-                null
+                task.getComponent() != null ? task.getComponent().getName() : null
         );
     }
-
 }
+

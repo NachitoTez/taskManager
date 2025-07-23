@@ -26,7 +26,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponse login(AuthRequest request) {
-        UserEntity userEntity = userService.findByUsername(request.username());
+        UserEntity userEntity = userService.findUserEntityByUsername(request.username());
 
         if (!passwordEncoder.matches(request.password(), userEntity.getPassword())) {
             throw new IllegalArgumentException("Invalid credentials");
@@ -45,11 +45,23 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String hashedPassword = passwordEncoder.encode(request.password());
-        UserEntity newUserEntity = new UserEntity(request.username(), hashedPassword);
+
+        String rawRole = request.role() != null ? request.role().toUpperCase() : "MEMBER";
+
+        com.lemon.taskmanager.tasks.domain.Role role;
+        try {
+            role = com.lemon.taskmanager.tasks.domain.Role.valueOf(rawRole);
+        } catch (IllegalArgumentException e) {
+            //TODO esto hacer una excepcion custom
+            throw new IllegalArgumentException("Invalid role: must be 'MEMBER' or 'MANAGER'");
+        }
+
+        UserEntity newUserEntity = new UserEntity(request.username(), hashedPassword, role.name());
         UserEntity savedUserEntity = userService.save(newUserEntity);
 
         String token = jwtService.generateToken(savedUserEntity);
         return new AuthResponse(token);
     }
+
 
 }

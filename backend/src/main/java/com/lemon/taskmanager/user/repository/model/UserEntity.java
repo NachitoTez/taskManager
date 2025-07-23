@@ -2,13 +2,15 @@ package com.lemon.taskmanager.user.repository.model;
 
 import jakarta.persistence.*;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "users")
 public class UserEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    private UUID id;
 
     @Column(unique = true, nullable = false)
     private String username;
@@ -21,13 +23,14 @@ public class UserEntity {
 
     public UserEntity() {}
 
-    public UserEntity(String username, String password) {
+    public UserEntity(String username, String password, String role) {
         this.username = username;
         this.password = password;
+        this.role = role;
     }
 
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -56,3 +59,4 @@ public class UserEntity {
         return role;
     }
 }
+//TODO cambiar todos los id con uuid

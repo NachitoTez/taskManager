@@ -2,13 +2,15 @@ package com.lemon.taskmanager.tasks.repository.model;
 
 import jakarta.persistence.*;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "components")
 public class ComponentEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    private UUID id;
 
     private String name;
 
@@ -19,12 +21,12 @@ public class ComponentEntity {
         this.name = name;
     }
 
-    public ComponentEntity(Long id, String name) {
+    public ComponentEntity(UUID id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 

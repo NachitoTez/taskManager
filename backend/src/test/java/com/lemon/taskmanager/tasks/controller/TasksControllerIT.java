@@ -35,7 +35,7 @@ class TasksControllerIT {
     @Test
     void shouldAllowAccessToTasksWithValidToken() {
         // Paso 1: Registro de usuario
-        RegisterRequest request = new RegisterRequest("obi.wan", "theforce");
+        RegisterRequest request = new RegisterRequest("obi.wan", "theforce", "member");
         ResponseEntity<AuthResponse> registerResponse = restTemplate.postForEntity(
                 getBaseUrl("/auth/register"),
                 request,

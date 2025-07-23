@@ -9,6 +9,8 @@ spring:
     password: sarasita
 
   jpa:
+    generate-ddl: true
+    defer-datasource-initialization: true
     hibernate:
       ddl-auto: update
     show-sql: true

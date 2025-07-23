@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserMapper {
 
-    public static User toDomain(UserEntity entity) {
+    public User toDomain(UserEntity entity) {
         return new User(
                 entity.getId(),
                 entity.getUsername(),

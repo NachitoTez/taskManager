@@ -1,8 +1,10 @@
 package com.lemon.taskmanager.auth.filters;
 
 import com.lemon.taskmanager.auth.service.JwtService;
-import com.lemon.taskmanager.user.service.UserService;
+import com.lemon.taskmanager.user.domain.User;
+import com.lemon.taskmanager.mapper.UserMapper;
 import com.lemon.taskmanager.user.repository.model.UserEntity;
+import com.lemon.taskmanager.user.service.UserService;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -11,12 +13,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -25,11 +29,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserService userService;
+    private final UserMapper userMapper;
 
-    public JwtAuthenticationFilter(JwtService jwtService, UserService userService) {
+    public JwtAuthenticationFilter(JwtService jwtService, UserService userService, UserMapper userMapper) {
         this.jwtService = jwtService;
         this.userService = userService;
+        this.userMapper = userMapper;
     }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -60,10 +67,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserEntity userEntity = userService.findByUsername(username);
+            UserEntity userEntity = userService.findUserEntityByUsername(username);
+            User user = userMapper.toDomain(userEntity);
+
+            var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
 
             UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(userEntity, null, null); //TODO sin roles por ahora
+                    new UsernamePasswordAuthenticationToken(user, null, authorities);
 
             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authToken);
@@ -79,5 +89,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
         return path.startsWith("/auth");
     }
-
 }

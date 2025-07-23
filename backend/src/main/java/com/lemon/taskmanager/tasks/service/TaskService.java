@@ -1,21 +1,27 @@
 package com.lemon.taskmanager.tasks.service;
 
+import com.lemon.taskmanager.exceptions.ComponentNotFoundException;
 import com.lemon.taskmanager.exceptions.TaskAssignmentNotAllowedException;
 import com.lemon.taskmanager.exceptions.TaskNotFoundException;
+import com.lemon.taskmanager.mapper.ComponentMapper;
 import com.lemon.taskmanager.mapper.TaskMapper;
 import com.lemon.taskmanager.tasks.controller.dto.CreateTaskRequest;
-import com.lemon.taskmanager.tasks.domain.Component;
+import com.lemon.taskmanager.tasks.domain.TaskComponent;
 import com.lemon.taskmanager.tasks.domain.Task;
 import com.lemon.taskmanager.tasks.domain.TaskStateMachine;
 import com.lemon.taskmanager.tasks.domain.TaskStatus;
+import com.lemon.taskmanager.tasks.repository.ComponentRepository;
 import com.lemon.taskmanager.tasks.repository.TaskRepository;
+import com.lemon.taskmanager.tasks.repository.model.ComponentEntity;
 import com.lemon.taskmanager.tasks.repository.model.TaskEntity;
 import com.lemon.taskmanager.user.domain.User;
+import com.lemon.taskmanager.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,10 +31,15 @@ public class TaskService {
 
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
+    private final ComponentRepository componentRepository;
+    private final UserService userService;
 
-    public TaskService(TaskRepository taskRepository, TaskMapper taskMapper) {
+    public TaskService(TaskRepository taskRepository, TaskMapper taskMapper, ComponentRepository componentRepository, UserService userService) {
         this.taskRepository = taskRepository;
         this.taskMapper = taskMapper;
+        this.componentRepository = componentRepository;
+        this.userService = userService;
+
     }
 
     public List<Task> getVisibleTasks(User user) {
@@ -40,7 +51,7 @@ public class TaskService {
                 .collect(Collectors.toList());
     }
 
-    public void updateTaskStatus(Long taskId, TaskStatus newStatus, User actor) {
+    public void updateTaskStatus(UUID taskId, TaskStatus newStatus, User actor) {
         LOGGER.info("User '{}' attempting to update task #{} to status '{}'", actor.getUsername(), taskId, newStatus);
 
         Task task = getDomainTaskOrThrow(taskId, "status update");
@@ -56,7 +67,7 @@ public class TaskService {
         taskRepository.save(taskMapper.toEntity(task));
     }
 
-    public void assignTask(Long taskId, User actor, User newAssignee) {
+    public void assignTask(UUID taskId, User actor, User newAssignee) {
         LOGGER.info("User '{}' attempting to assign task #{} to '{}'", actor.getUsername(), taskId, newAssignee.getUsername());
 
         Task task = getDomainTaskOrThrow(taskId, "assignment");
@@ -66,7 +77,7 @@ public class TaskService {
         taskRepository.save(taskMapper.toEntity(task));
     }
 
-    public Task getTaskById(Long taskId, User actor) {
+    public Task getTaskById(UUID taskId, User actor) {
         LOGGER.info("User '{}' fetching task #{}", actor.getUsername(), taskId);
 
         Task task = getDomainTaskOrThrow(taskId, "view");
@@ -79,7 +90,7 @@ public class TaskService {
         return task;
     }
 
-    private Task getDomainTaskOrThrow(Long taskId, String contextForLogging) {
+    private Task getDomainTaskOrThrow(UUID taskId, String contextForLogging) {
         return taskRepository.findById(taskId)
                 .map(taskMapper::toDomain)
                 .orElseThrow(() -> {
@@ -91,27 +102,32 @@ public class TaskService {
     public Task createTask(CreateTaskRequest request, User creator) {
         LOGGER.info("User '{}' creating task '{}'", creator.getUsername(), request.title());
 
-        User assignee = request.assigneeId() != null
-                ? new User(request.assigneeId(), null, null)
-                : null;
+        ComponentEntity componentEntity = componentRepository.findById(request.componentId())
+                .orElseThrow(() -> new ComponentNotFoundException(request.componentId()));
+        TaskComponent taskComponent = ComponentMapper.toDomain(componentEntity);
 
-        Component component = new Component(request.componentId(), "placeholder", null);
+        User assignee = null;
+        if (request.assigneeId() != null) {
+            assignee = userService.findUserById(request.assigneeId());
+        }
 
+        // Crear tarea
         Task task = new Task(
                 null,
                 request.title(),
                 request.description(),
                 creator,
                 assignee,
-                component
+                taskComponent
         );
-
         task.setStatus(TaskStatus.BACKLOG);
 
+        // Persistir
         TaskEntity entity = taskMapper.toEntity(task);
         TaskEntity saved = taskRepository.save(entity);
 
         return taskMapper.toDomain(saved);
     }
+
 
 }

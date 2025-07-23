@@ -40,7 +40,7 @@ class AuthServiceImplTest {
         //TODO esto lo cambio seguro
         userEntity.setPassword(encodedPassword);
 
-        when(userService.findByUsername(username)).thenReturn(userEntity);
+        when(userService.findUserEntityByUsername(username)).thenReturn(userEntity);
         when(passwordEncoder.matches(rawPassword, encodedPassword)).thenReturn(true);
         when(jwtService.generateToken(userEntity)).thenReturn(expectedToken);
 
@@ -50,7 +50,7 @@ class AuthServiceImplTest {
 
         assertNotNull(response);
         assertEquals(expectedToken, response.token());
-        verify(userService).findByUsername(username);
+        verify(userService).findUserEntityByUsername(username);
         verify(passwordEncoder).matches(rawPassword, encodedPassword);
         verify(jwtService).generateToken(userEntity);
     }

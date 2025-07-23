@@ -2,4 +2,5 @@ package com.lemon.taskmanager.tasks.controller.dto;
 
 import java.util.UUID;
 
-public record AssignTaskRequest(UUID userId) {}
+public record CreateComponentRequest(String name, UUID projectId) {}
+

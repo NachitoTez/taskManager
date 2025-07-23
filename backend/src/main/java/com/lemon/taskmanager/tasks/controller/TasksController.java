@@ -1,19 +1,20 @@
 package com.lemon.taskmanager.tasks.controller;
 
 import com.lemon.taskmanager.mapper.TaskMapper;
-import com.lemon.taskmanager.tasks.controller.dto.AssignTaskRequest;
-import com.lemon.taskmanager.tasks.controller.dto.TaskResponse;
-import com.lemon.taskmanager.tasks.controller.dto.UpdateStatusRequest;
+import com.lemon.taskmanager.tasks.controller.dto.*;
+import com.lemon.taskmanager.tasks.domain.Task;
 import com.lemon.taskmanager.tasks.service.TaskService;
 import com.lemon.taskmanager.user.domain.User;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/tasks")
@@ -42,7 +43,7 @@ public class TasksController {
 
     @PatchMapping("/{id}/status")
     public ResponseEntity<Void> updateTaskStatus(
-            @PathVariable Long id,
+            @PathVariable UUID id,
             @Valid @RequestBody UpdateStatusRequest request,
             @AuthenticationPrincipal User user
     ) {
@@ -54,7 +55,7 @@ public class TasksController {
 
     @PatchMapping("/{id}/assign")
     public ResponseEntity<Void> assignTask(
-            @PathVariable Long id,
+            @PathVariable UUID id,
             @RequestBody AssignTaskRequest request,
             @AuthenticationPrincipal User actor
     ) {
@@ -66,14 +67,30 @@ public class TasksController {
         return ResponseEntity.noContent().build();
     }
 
-//    @PostMapping
-//    public ResponseEntity<TaskResponse> createTask(
-//            @Valid @RequestBody CreateTaskRequest request,
-//            @AuthenticationPrincipal User user
-//    ) {
-//        LOGGER.info("POST /tasks requested by '{}'", user.getUsername());
-//        Task task = taskService.createTask(request, user);
-//        return ResponseEntity.status(HttpStatus.CREATED).body(taskMapper.toResponse(task));
+    @PostMapping
+    public ResponseEntity<TaskResponse> createTask(
+            @Valid @RequestBody CreateTaskRequest request,
+            @AuthenticationPrincipal User user
+    ) {
+        LOGGER.info("POST /tasks requested by '{}'", user.getUsername());
+        Task task = taskService.createTask(request, user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(taskMapper.toResponse(task));
+    }
+
+//    @PostMapping("/components")
+//    public ResponseEntity<ComponentResponse> createComponent(@RequestBody CreateComponentRequest request) {
+//        ProjectEntity project = projectRepository.findById(request.projectId())
+//                .orElseThrow(() -> new ProjectNotFoundException(request.projectId()));
+//        UUID id = UUID.randomUUID();
+//        ComponentEntity entity = new ComponentEntity(id, request.name(), project);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(componentMapper.toResponse(componentRepository.save(entity)));
+//    }
+//
+//    @PostMapping("/projects")
+//    public ResponseEntity<ProjectResponse> createProject(@RequestBody CreateProjectRequest request) {
+//        UUID id = UUID.randomUUID();
+//        ProjectEntity project = new ProjectEntity(id, request.name());
+//        return ResponseEntity.status(HttpStatus.CREATED).body(projectMapper.toResponse(projectRepository.save(project)));
 //    }
 
 }

@@ -4,13 +4,15 @@ import com.lemon.taskmanager.tasks.domain.TaskStatus;
 import com.lemon.taskmanager.user.repository.model.UserEntity;
 import jakarta.persistence.*;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "tasks")
 public class TaskEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    private UUID id;
 
     private String title;
 
@@ -50,7 +52,7 @@ public class TaskEntity {
     }
 
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 

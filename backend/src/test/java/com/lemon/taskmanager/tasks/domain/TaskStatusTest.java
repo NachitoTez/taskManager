@@ -2,6 +2,7 @@ package com.lemon.taskmanager.tasks.domain;
 
 import com.lemon.taskmanager.exceptions.InvalidTaskTransitionException;
 import com.lemon.taskmanager.factory.TaskTestFactory;
+import com.lemon.taskmanager.factory.UserTestFactory;
 import com.lemon.taskmanager.user.domain.User;
 import org.junit.jupiter.api.Test;
 
@@ -9,9 +10,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TaskStatusTest {
 
-    private final User anakin = new User(1L, "anakin", Role.MEMBER);
-    private final User tarkin = new User(2L, "tarkin", Role.MANAGER);
-    private final User vader = new User(3L, "vader", Role.MEMBER);
+    private final User anakin = UserTestFactory.memberWithName("Anakin");
+    private final User tarkin = UserTestFactory.managerWithName("Tarkin");
+    private final User vader = UserTestFactory.memberWithName("Vader");
 
     @Test
     void should_allow_valid_transition_from_backlog_to_in_progress() {

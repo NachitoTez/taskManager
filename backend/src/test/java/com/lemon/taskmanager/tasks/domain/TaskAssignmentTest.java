@@ -2,16 +2,19 @@ package com.lemon.taskmanager.tasks.domain;
 
 import com.lemon.taskmanager.exceptions.TaskAssignmentNotAllowedException;
 import com.lemon.taskmanager.factory.TaskTestFactory;
+import com.lemon.taskmanager.factory.UserTestFactory;
 import com.lemon.taskmanager.user.domain.User;
 import org.junit.jupiter.api.Test;
+
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class TaskAssignmentTest {
 
-    private final User vader = new User(1L, "vader", Role.MEMBER);
-    private final User tarkin = new User(2L, "tarkin", Role.MANAGER);
-    private final User thrawn = new User(3L, "thrawn", Role.MEMBER);
+    private final User vader = UserTestFactory.memberWithName("Vader");
+    private final User tarkin = UserTestFactory.managerWithName("Tarkin");
+    private final User thrawn = UserTestFactory.memberWithName("Thrawn");
 
     @Test
     void should_allow_anyone_to_assign_unassigned_task() {
@@ -44,7 +47,7 @@ class TaskAssignmentTest {
     void should_not_allow_vader_to_reassign_thrawns_task() {
         Task task = TaskTestFactory.simpleTask(TaskStatus.BACKLOG, tarkin, thrawn);
 
-        assertThrows(TaskAssignmentNotAllowedException.class, () -> task.assignTo(vader, new User(4L, "yoda", Role.MEMBER)));
+        assertThrows(TaskAssignmentNotAllowedException.class, () -> task.assignTo(vader, new User(UUID.randomUUID(), "yoda", Role.MEMBER)));
     }
 
 }

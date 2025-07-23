@@ -1,7 +1,9 @@
 package com.lemon.taskmanager.tasks.domain;
 
-public class Component {
-    private final Long id;
+import java.util.UUID;
+
+public class TaskComponent {
+    private final UUID id;
     private final String name;
     private final Project project;
 
@@ -13,11 +15,11 @@ public class Component {
         return name;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public Component(Long id, String name, Project project) {
+    public TaskComponent(UUID id, String name, Project project) {
         this.id = id;
         this.name = name;
         this.project = project;
