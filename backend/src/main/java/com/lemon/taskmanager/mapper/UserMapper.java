@@ -1,7 +1,7 @@
 package com.lemon.taskmanager.mapper;
 
 import com.lemon.taskmanager.user.domain.User;
-import com.lemon.taskmanager.user.model.UserEntity;
+import com.lemon.taskmanager.user.repository.model.UserEntity;
 import com.lemon.taskmanager.tasks.domain.Role;
 import org.springframework.stereotype.Component;
 

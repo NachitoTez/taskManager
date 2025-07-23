@@ -1,6 +1,7 @@
 package com.lemon.taskmanager.tasks.domain;
 
 import com.lemon.taskmanager.exceptions.TaskAssignmentNotAllowedException;
+import com.lemon.taskmanager.factory.TaskTestFactory;
 import com.lemon.taskmanager.user.domain.User;
 import org.junit.jupiter.api.Test;
 

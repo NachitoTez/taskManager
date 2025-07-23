@@ -1,6 +1,6 @@
 package com.lemon.taskmanager.user.service;
 
-import com.lemon.taskmanager.user.model.UserEntity;
+import com.lemon.taskmanager.user.repository.model.UserEntity;
 
 public interface UserService {
     UserEntity findByUsername(String username);

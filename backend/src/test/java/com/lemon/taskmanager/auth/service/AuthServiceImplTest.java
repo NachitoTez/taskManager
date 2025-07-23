@@ -1,8 +1,8 @@
 package com.lemon.taskmanager.auth.service;
 
-import com.lemon.taskmanager.auth.dto.AuthRequest;
-import com.lemon.taskmanager.auth.dto.AuthResponse;
-import com.lemon.taskmanager.user.model.UserEntity;
+import com.lemon.taskmanager.auth.controller.dto.AuthRequest;
+import com.lemon.taskmanager.auth.controller.dto.AuthResponse;
+import com.lemon.taskmanager.user.repository.model.UserEntity;
 import com.lemon.taskmanager.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

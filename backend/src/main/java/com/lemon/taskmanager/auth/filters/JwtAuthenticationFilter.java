@@ -2,7 +2,7 @@ package com.lemon.taskmanager.auth.filters;
 
 import com.lemon.taskmanager.auth.service.JwtService;
 import com.lemon.taskmanager.user.service.UserService;
-import com.lemon.taskmanager.user.model.UserEntity;
+import com.lemon.taskmanager.user.repository.model.UserEntity;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

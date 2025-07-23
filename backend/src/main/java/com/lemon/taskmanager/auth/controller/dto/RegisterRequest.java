@@ -1,8 +1,8 @@
-package com.lemon.taskmanager.auth.dto;
+package com.lemon.taskmanager.auth.controller.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record AuthRequest(
+public record RegisterRequest(
         @NotBlank String username,
         @NotBlank String password
 ) {}

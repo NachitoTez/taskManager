@@ -1,7 +1,7 @@
-package com.lemon.taskmanager.tasks.model;
+package com.lemon.taskmanager.tasks.repository.model;
 
 import com.lemon.taskmanager.tasks.domain.TaskStatus;
-import com.lemon.taskmanager.user.model.UserEntity;
+import com.lemon.taskmanager.user.repository.model.UserEntity;
 import jakarta.persistence.*;
 
 @Entity
@@ -30,17 +30,25 @@ public class TaskEntity {
     @JoinColumn(name = "assigned_to_id")
     private UserEntity assignedTo;
 
-    // TODO: agregar ComponentEntity cuando modele Component
+    @ManyToOne
+    @JoinColumn(name = "component_id")
+    private ComponentEntity component;
+
+    public ComponentEntity getComponent() {
+        return component;
+    }
 
     public TaskEntity() {}
 
-    public TaskEntity(String title, String description, TaskStatus status, UserEntity createdBy, UserEntity assignedTo) {
+    public TaskEntity(String title, String description, TaskStatus status, UserEntity createdBy, UserEntity assignedTo, ComponentEntity component) {
         this.title = title;
         this.description = description;
         this.status = status;
         this.createdBy = createdBy;
         this.assignedTo = assignedTo;
+        this.component = component;
     }
+
 
     public Long getId() {
         return id;

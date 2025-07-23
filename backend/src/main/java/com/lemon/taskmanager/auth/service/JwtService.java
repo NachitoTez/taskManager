@@ -1,6 +1,6 @@
 package com.lemon.taskmanager.auth.service;
 
-import com.lemon.taskmanager.user.model.UserEntity;
+import com.lemon.taskmanager.user.repository.model.UserEntity;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;

@@ -1,7 +1,7 @@
 package com.lemon.taskmanager.tasks.controller;
 
-import com.lemon.taskmanager.auth.dto.AuthResponse;
-import com.lemon.taskmanager.auth.dto.RegisterRequest;
+import com.lemon.taskmanager.auth.controller.dto.AuthResponse;
+import com.lemon.taskmanager.auth.controller.dto.RegisterRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

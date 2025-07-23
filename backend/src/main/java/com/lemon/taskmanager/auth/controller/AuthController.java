@@ -1,8 +1,8 @@
 package com.lemon.taskmanager.auth.controller;
 
-import com.lemon.taskmanager.auth.dto.AuthRequest;
-import com.lemon.taskmanager.auth.dto.RegisterRequest;
-import com.lemon.taskmanager.auth.dto.AuthResponse;
+import com.lemon.taskmanager.auth.controller.dto.AuthRequest;
+import com.lemon.taskmanager.auth.controller.dto.RegisterRequest;
+import com.lemon.taskmanager.auth.controller.dto.AuthResponse;
 import com.lemon.taskmanager.auth.service.AuthService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;

@@ -1,12 +1,14 @@
 package com.lemon.taskmanager.tasks.service;
 
 import com.lemon.taskmanager.exceptions.TaskAssignmentNotAllowedException;
+import com.lemon.taskmanager.exceptions.TaskNotFoundException;
 import com.lemon.taskmanager.mapper.TaskMapper;
+import com.lemon.taskmanager.tasks.controller.dto.CreateTaskRequest;
 import com.lemon.taskmanager.tasks.domain.Role;
 import com.lemon.taskmanager.tasks.domain.Task;
 import com.lemon.taskmanager.tasks.domain.TaskStatus;
-import com.lemon.taskmanager.tasks.domain.TaskTestFactory;
-import com.lemon.taskmanager.tasks.model.TaskEntity;
+import com.lemon.taskmanager.factory.TaskTestFactory;
+import com.lemon.taskmanager.tasks.repository.model.TaskEntity;
 import com.lemon.taskmanager.tasks.repository.TaskRepository;
 import com.lemon.taskmanager.user.domain.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -77,6 +79,23 @@ class TaskServiceTest {
         verify(taskRepository).save(taskEntity);
     }
 
+
+    @Test
+    void should_allow_member_to_assign_unassigned_task_to_self() {
+        User boba = new User(1L, "boba", Role.MEMBER);
+        Task task = TaskTestFactory.simpleTask(TaskStatus.BACKLOG, boba, null);
+        TaskEntity entity = mock(TaskEntity.class);
+
+        when(taskRepository.findById(42L)).thenReturn(Optional.of(entity));
+        when(taskMapper.toDomain(entity)).thenReturn(task);
+        when(taskMapper.toEntity(task)).thenReturn(entity);
+
+        taskService.assignTask(42L, boba, boba);
+
+        assertThat(task.getAssignedTo()).isEqualTo(boba);
+        verify(taskRepository).save(entity);
+    }
+
     @Test
     void should_allow_manager_to_reassign_task() {
         User tarkin = new User(1L, "tarkin", Role.MANAGER);
@@ -129,5 +148,86 @@ class TaskServiceTest {
                 () -> taskService.assignTask(99L, actor, newAssignee)
         );
     }
+
+    @Test
+    void should_update_task_status_when_user_can_edit() {
+        User anakin = new User(1L, "anakin", Role.MEMBER);
+        Task task = TaskTestFactory.simpleTask(TaskStatus.BACKLOG, anakin, anakin);
+        TaskEntity entity = mock(TaskEntity.class);
+
+        when(taskRepository.findById(42L)).thenReturn(Optional.of(entity));
+        when(taskMapper.toDomain(entity)).thenReturn(task);
+        when(taskMapper.toEntity(task)).thenReturn(entity);
+
+        taskService.updateTaskStatus(42L, TaskStatus.IN_PROGRESS, anakin);
+
+        assertThat(task.getStatus()).isEqualTo(TaskStatus.IN_PROGRESS);
+        verify(taskRepository).save(entity);
+    }
+
+    @Test
+    void should_throw_if_user_cannot_edit_task() {
+        User obiwan = new User(1L, "obiwan", Role.MEMBER);
+        User mace = new User(2L, "mace", Role.MEMBER);
+        Task task = TaskTestFactory.simpleTask(TaskStatus.BACKLOG, mace, mace);
+
+        TaskEntity entity = mock(TaskEntity.class);
+        when(taskRepository.findById(42L)).thenReturn(Optional.of(entity));
+        when(taskMapper.toDomain(entity)).thenReturn(task);
+
+        assertThrows(TaskAssignmentNotAllowedException.class, () ->
+                taskService.updateTaskStatus(42L, TaskStatus.TESTING, obiwan)
+        );
+
+        verify(taskRepository, never()).save(any());
+    }
+
+    @Test
+    void should_throw_if_task_not_found() {
+        User yoda = new User(1L, "yoda", Role.MANAGER);
+        when(taskRepository.findById(999L)).thenReturn(Optional.empty());
+
+        assertThrows(TaskNotFoundException.class, () ->
+                taskService.updateTaskStatus(999L, TaskStatus.TESTING, yoda)
+        );
+    }
+
+    @Test
+    void should_throw_if_user_cannot_view_task() {
+        User finn = new User(1L, "finn", Role.MEMBER);
+        User poe = new User(2L, "poe", Role.MEMBER);
+
+        Task task = TaskTestFactory.simpleTask(TaskStatus.BACKLOG, poe, poe); // finn no puede verla
+        TaskEntity entity = mock(TaskEntity.class);
+
+        when(taskRepository.findById(13L)).thenReturn(Optional.of(entity));
+        when(taskMapper.toDomain(entity)).thenReturn(task);
+
+        assertThrows(TaskAssignmentNotAllowedException.class, () -> taskService.getTaskById(13L, finn));
+    }
+
+    @Test
+    void should_create_task_with_optional_assignee() {
+        User vader = new User(1L, "vader", Role.MANAGER);
+        User tarkin = new User(2L, "tarkin", Role.MEMBER);
+
+        CreateTaskRequest request = TaskTestFactory.createRequestWithAssignee(TaskTestFactory.componentEngineering(), tarkin);
+        Task expectedTask = TaskTestFactory.simpleTask(TaskStatus.BACKLOG, vader, tarkin);
+
+        TaskEntity entity = mock(TaskEntity.class);
+        when(taskMapper.toEntity(any())).thenReturn(entity);
+        when(taskRepository.save(entity)).thenReturn(entity);
+        when(taskMapper.toDomain(entity)).thenReturn(expectedTask);
+
+        Task result = taskService.createTask(request, vader);
+
+        assertThat(result.getTitle()).isEqualTo(expectedTask.getTitle());
+        assertThat(result.getStatus()).isEqualTo(TaskStatus.BACKLOG);
+        assertThat(result.getCreatedBy()).isEqualTo(vader);
+        assertThat(result.getAssignedTo()).isEqualTo(tarkin);
+
+        verify(taskRepository).save(entity);
+    }
+
 
 }

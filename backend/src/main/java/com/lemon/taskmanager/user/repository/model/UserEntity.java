@@ -1,4 +1,4 @@
-package com.lemon.taskmanager.user.model;
+package com.lemon.taskmanager.user.repository.model;
 
 import jakarta.persistence.*;
 
