@@ -42,4 +42,31 @@ public class TaskEntity {
         this.assignedTo = assignedTo;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public TaskStatus getStatus() {
+        return status;
+    }
+
+    public TaskStatus getPreviousStatus() {
+        return previousStatus;
+    }
+
+    public UserEntity getCreatedBy() {
+        return createdBy;
+    }
+
+    public UserEntity getAssignedTo() {
+        return assignedTo;
+    }
 }

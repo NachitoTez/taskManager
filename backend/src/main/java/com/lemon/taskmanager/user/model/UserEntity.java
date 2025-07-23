@@ -16,6 +16,8 @@ public class UserEntity {
     @Column(nullable = false)
     private String password;
 
+    private String role;
+
 
     public UserEntity() {}
 
@@ -44,5 +46,13 @@ public class UserEntity {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getRole() {
+        return role;
     }
 }
