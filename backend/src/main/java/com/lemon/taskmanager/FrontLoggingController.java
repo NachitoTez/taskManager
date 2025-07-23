@@ -28,4 +28,4 @@ public class FrontLoggingController {
 
     public record LoggingRequest(String logLevel, String message) {}
 }
-//TODO parece que no están llegando, que lastima. Arreglar
+//TODO parece que no están llegando, parece un tema de cors. Arreglar

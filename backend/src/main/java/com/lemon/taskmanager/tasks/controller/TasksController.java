@@ -41,6 +41,18 @@ public class TasksController {
         return ResponseEntity.ok(responses);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<TaskResponse> getTaskById(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal User user
+    ) {
+        LOGGER.info("GET /tasks/{} requested by '{}'", id, user.getUsername());
+
+        Task task = taskService.getTaskById(id, user);
+        return ResponseEntity.ok(taskMapper.toResponse(task));
+    }
+
+
     @PatchMapping("/{id}/status")
     public ResponseEntity<Void> updateTaskStatus(
             @PathVariable UUID id,

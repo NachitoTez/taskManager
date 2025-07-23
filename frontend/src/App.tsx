@@ -5,8 +5,8 @@ import ProtectedLayout from './components/ProtectedLayout';
 import TaskDashboardLayout from './pages/Tasks/TaskDashboardLayout';
 // import ProjectList from './pages/Projects/ProjectList';
 // import ComponentList from './pages/Components/ComponentList';
-import TaskList from './pages/Tasks/TaskList';
-// import TaskDetail from './pages/Tasks/TaskDetail';
+import TaskList from './pages/Tasks/TaskList/TaskList.tsx';
+import TaskDetail from './pages/Tasks/TaskDetail/TaskDetail.tsx';
 
 function App() {
     return (
@@ -19,7 +19,7 @@ function App() {
                     <Route index element={<TaskList />} />
                     {/*<Route path="projects" element={<ProjectList />} />*/}
                     {/*<Route path="components" element={<ComponentList />} />*/}
-                    {/*<Route path=":taskId" element={<TaskDetail />} />*/}
+                    <Route path=":taskId" element={<TaskDetail />} />
                 </Route>
             </Route>
 
