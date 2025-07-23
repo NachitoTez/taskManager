@@ -1,5 +1,4 @@
-import './TaskList.scss';
-
+import './TasksList.scss'
 const mockTasks = [
     { id: 'PEP-1', title: 'Set up your teams', count: 2, date: 'Jul 21' },
     { id: 'PEP-2', title: 'Connect your tools', count: 3, date: 'Jul 21' },

@@ -1,28 +1,27 @@
-import { useAuth } from '../../context/useAuth.ts';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 
 function Sidebar() {
-    const { logout } = useAuth();
-    const [open, setOpen] = useState(false);
     const navigate = useNavigate();
 
     return (
         <div className="sidebar">
-            <div className="sidebar-top">
-                <button onClick={() => setOpen(!open)} className="dropdown-toggle">
-                    ☰
-                </button>
-                {open && (
-                    <div className="dropdown-menu">
-                        <button onClick={logout}>Cerrar sesión</button>
-                    </div>
-                )}
-            </div>
+
             <nav className="sidebar-nav">
-                <button onClick={() => navigate('/projects')}>Proyectos</button>
-                <button onClick={() => navigate('/components')}>Componentes</button>
-                <button onClick={() => navigate('/tasks')}>Tareas</button>
+
+                <div className={"nav-item"}
+                     onClick={() => navigate('/projects')}>
+                    <h3>Projects</h3>
+                </div>
+
+                <div className={"nav-item"}
+                    onClick={() => navigate('/components')}>
+                    <h3>Components</h3>
+                </div>
+
+                <div className={"nav-item"}
+                    onClick={() => navigate('/tasks')}>
+                    <h3>Tasks</h3>
+                </div>
             </nav>
         </div>
     );

@@ -1,12 +1,12 @@
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../../context/useAuth';
 import './TaskDashboardLayout.scss';
 import Toast from '../../components/Toast';
+import Sidebar from "./Sidebar.tsx";
 
 export default function TaskDashboardLayout() {
     const location = useLocation();
-    const navigate = useNavigate();
     const { logout } = useAuth();
     const [welcomeMsg, setWelcomeMsg] = useState<string | null>(null);
 
@@ -22,6 +22,7 @@ export default function TaskDashboardLayout() {
         <div className="layout">
             {welcomeMsg && <Toast message={welcomeMsg} onClose={() => setWelcomeMsg(null)} />}
 
+            {/*TODO podría ser otro componente*/}
             <header className="navbar">
                 <div className="userArea">
                     <button onClick={logout}>Cerrar sesión</button>
@@ -32,15 +33,8 @@ export default function TaskDashboardLayout() {
             </header>
 
             <div className="container">
-                <aside className="sidebar">
-                    <nav className="nav">
-                        <ul>
-                            <li><button onClick={() => navigate('/tasks/projects')}>Projects</button></li>
-                            <li><button onClick={() => navigate('/tasks/components')}>Components</button></li>
-                            <li><button onClick={() => navigate('/tasks')}>Tasks</button></li>
-                        </ul>
-                    </nav>
-                </aside>
+                <Sidebar />
+
 
                 <main className="content">
                     <Outlet />
