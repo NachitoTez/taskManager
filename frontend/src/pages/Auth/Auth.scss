@@ -9,8 +9,6 @@
 }
 
 body {
-    margin: 0;
-    padding: 0;
     font-family: var(--font-family);
     background: var(--background);
     background-image: linear-gradient(to right bottom,
@@ -20,6 +18,8 @@ body {
             #131c14, #192c1b, #1d3c22, #246433, #278e44, #23bb56, #0eea69);
     color: var(--font-color);
     min-height: 100vh;
+    margin: 0;
+    overflow: hidden;
 }
 
 
@@ -31,7 +31,7 @@ body {
     height: 100vh;
     text-align: center;
 
-    .logo {
+    .logo-login {
         display: block;
         height: 80px;
         margin: 0 auto 32px auto;

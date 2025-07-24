@@ -71,7 +71,7 @@ export default function Auth({ isLogin }: AuthProps) {
 
     return (
         <div className="auth-wrapper">
-            <img src={logo} alt="Lemon logo" className="logo"/>
+            <img src={logo} alt="Lemon logo" className="logo-login"/>
             <div className="login-box">
                 <div className="login-box-title">
                     <h1>{isLogin ? 'Bienvenido/a' : 'Crea tu cuenta'}</h1>

@@ -4,29 +4,7 @@
   box-sizing: border-box;
 }
 
-.task-filters {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
 
-  button {
-    background: transparent;
-    border: none;
-    color: var(--font-color);
-    font-weight: bold;
-    cursor: pointer;
-    padding: 0.5rem;
-    border-bottom: 2px solid transparent;
-
-    &.active {
-      border-bottom: 2px solid var(--primary-color);
-    }
-
-    &:hover {
-      color: var(--primary-color);
-    }
-  }
-}
 
 .task-group {
   .task-group-header {

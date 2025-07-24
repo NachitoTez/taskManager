@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import './TaskDetail.scss';
-import NotFound from "../../../components/NotFound.tsx";
+import NotFound from "../../../components/NotFound/NotFound.tsx";
 
 type User = {
     id: string;

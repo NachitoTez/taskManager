@@ -1,14 +1,14 @@
 .toast {
   position: fixed;
-  top: 20px;
-  right: 20px;
-  background-color: #00f068;
-  color: #090a09;
-  padding: 10px 20px;
-  border-radius: 12px;
+  bottom: 50px;
+  right: 50px;
+  background-color: rgba(0, 240, 104, 0.1);
+  color: #00f068;
   font-weight: bold;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
+  font-size: 1.2rem; // ✅ más grande
+  padding: 20px 30px;
+  border-radius: 16px;
   z-index: 1000;
   transition: opacity 0.3s ease-in-out;
+  cursor: pointer;
 }

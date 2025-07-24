@@ -1,0 +1,50 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #1a1a1a;
+  color: white;
+  padding: 0.5rem 1rem;
+
+  .nav-left-container{
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  }
+  .nav-title{
+    padding-right: 1rem;
+    border-right: 2px solid #888;
+  }
+
+  .nav-filters {
+    display: flex;
+    gap: 1rem;
+    button {
+      background: transparent;
+      border: none;
+      color: var(--font-color);
+      font-weight: bold;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-bottom: 2px solid transparent;
+
+      &.active {
+        border-bottom: 2px solid var(--primary-color);
+      }
+
+      &:hover {
+        color: var(--primary-color);
+      }
+    }
+  }
+
+  .create-container button {
+    background: rgb(0, 240, 104);
+    border: none;
+    padding: 0.4rem 0.8rem;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 8px;
+  }
+
+}

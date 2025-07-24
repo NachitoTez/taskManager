@@ -11,11 +11,6 @@ export default function TaskList() {
 
     return (
         <div className="task-wrapper">
-            <div className="task-filters">
-                <button className="active">All</button>
-                <button>Active</button>
-                <button>Backlog</button>
-            </div>
 
             <div className="task-group">
                 <div className="task-group-header">

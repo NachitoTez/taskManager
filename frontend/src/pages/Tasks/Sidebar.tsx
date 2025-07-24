@@ -1,4 +1,5 @@
 import {  useNavigate } from 'react-router-dom';
+import logo from "../../assets/lemon.svg";
 
 function Sidebar() {
     const navigate = useNavigate();
@@ -8,6 +9,9 @@ function Sidebar() {
 
             <nav className="sidebar-nav">
 
+                <div className={"logo"}>
+                    <img src={logo} alt="Lemon logo" className="logo"/>
+                </div>
                 <div className={"nav-item"}
                      onClick={() => navigate('/projects')}>
                     <h3>Projects</h3>
