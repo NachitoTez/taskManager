@@ -1,9 +1,9 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import './TaskDashboardLayout.scss';
-import Toast from '../../components/Toast';
+import Toast from '../../components/Toast/Toast.tsx';
 import Sidebar from "./Sidebar.tsx";
-import Navbar from "../../components/Navbar.tsx";
+import Navbar from "../../components/Navbar/Navbar.tsx";
 
 export default function TaskDashboardLayout() {
     const location = useLocation();

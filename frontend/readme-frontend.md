@@ -79,5 +79,13 @@ Además:
 
 - Agregar validaciones adicionales (ej: campos vacíos, uppercase)
 - Agregar CAPTCHA o bloqueo por múltiples intentos
-- Mejorar feedback visual con una librería de toasts (ej: react-hot-toast)
-- Soporte a múltiples idiomas si es requerido
+
+El modal de creación de tareas incluye un checkbox opcional para autoasignarse como responsable.
+En versiones futuras, se reemplazará por un dropdown con todos los usuarios del equipo.
+La lógica será:
+
+Miembros solo pueden asignarse a sí mismos.
+
+Managers pueden asignar la tarea a cualquier miembro del equipo.
+
+
