@@ -10,10 +10,12 @@ public class TaskMapper {
 
     private final UserMapper userMapper;
     private final ComponentMapper componentMapper;
+    private final ProjectMapper projectMapper;
 
-    public TaskMapper(UserMapper userMapper, ComponentMapper componentMapper) {
+    public TaskMapper(UserMapper userMapper, ComponentMapper componentMapper, ProjectMapper projectMapper) {
         this.userMapper = userMapper;
         this.componentMapper = componentMapper;
+        this.projectMapper = projectMapper;
     }
 
     public Task toDomain(TaskEntity entity) {
@@ -34,7 +36,7 @@ public class TaskMapper {
                 task.getStatus(),
                 userMapper.toEntity(task.getCreatedBy()),
                 task.getAssignedTo() != null ? userMapper.toEntity(task.getAssignedTo()) : null,
-                task.getComponent() != null ? componentMapper.toEntity(task.getComponent()) : null
+                task.getComponent() != null ? componentMapper.toEntity(task.getComponent(), projectMapper.toEntity(task.getComponent().getProject())) : null
         );
     }
 

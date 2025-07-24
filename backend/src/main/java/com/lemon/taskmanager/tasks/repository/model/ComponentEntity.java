@@ -14,16 +14,16 @@ public class ComponentEntity {
 
     private String name;
 
-    //TODO estoy pensando como hago las relaciones entre tarea -> componente -> proyecto
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private ProjectEntity project;
+
     public ComponentEntity() {}
 
-    public ComponentEntity(String name) {
-        this.name = name;
-    }
-
-    public ComponentEntity(UUID id, String name) {
+    public ComponentEntity(UUID id, String name, ProjectEntity project) {
         this.id = id;
         this.name = name;
+        this.project = project;
     }
 
     public UUID getId() {
@@ -32,5 +32,9 @@ public class ComponentEntity {
 
     public String getName() {
         return name;
+    }
+
+    public ProjectEntity getProject() {
+        return project;
     }
 }

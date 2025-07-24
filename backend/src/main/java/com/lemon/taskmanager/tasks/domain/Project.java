@@ -17,6 +17,18 @@ public class Project {
         this.name = name;
     }
 
+    public UUID getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Set<User> getMembers() {
+        return members;
+    }
+
     public void addMember(User user) {
         members.add(user);
     }

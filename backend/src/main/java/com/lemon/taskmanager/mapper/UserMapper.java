@@ -16,7 +16,7 @@ public class UserMapper {
         );
     }
 
-    public static UserEntity toEntity(User domainUser) {
+    public UserEntity toEntity(User domainUser) {
         UserEntity entity = new UserEntity();
         entity.setUsername(domainUser.getUsername());
         entity.setRole(domainUser.getRole().name());

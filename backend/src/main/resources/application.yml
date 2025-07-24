@@ -1,12 +1,12 @@
-
 spring:
   application:
     name: taskmanager
+
   datasource:
-    url: jdbc:h2:mem:taskdb
-    driver-class-name: org.h2.Driver
-    username: sarasa
-    password: sarasita
+    url: jdbc:postgresql://localhost:5432/taskmanager
+    driver-class-name: org.postgresql.Driver
+    username: user
+    password: password
 
   jpa:
     generate-ddl: true
@@ -14,10 +14,20 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
-  h2:
-    console:
-      enabled: true
+  # H2 fallback (lo dejo por si lo vuelvo a necesitar)
+  #  datasource:
+  #    url: jdbc:h2:mem:taskdb
+  #    driver-class-name: org.h2.Driver
+  #    username: sarasa
+  #    password: sarasita
+  #  h2:
+  #    console:
+  #      enabled: true
+
   sql:
     init:
       mode: always
@@ -27,11 +37,10 @@ logging:
     root: INFO
     com.lemon.taskmanager: INFO
 
-
 server:
   port: 8081
 
-#  No me gusta tener esto acá pero para facilidad de la persona que corra el challenge
-#  va a quedar expuesta
+# No me gusta tener esto acá pero para facilidad de la persona que corra el challenge
+# va a quedar expuesta
 jwt:
   secret: VnZwc0tUM2p2c1lYSkxUZ2EzUFJvYmNGZGRjQjRhb0U=

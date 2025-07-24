@@ -15,6 +15,34 @@ Aplicación full stack para la gestión colaborativa de tareas. Incluye autentic
 ## 🚀 Iniciar el proyecto
 
 Este repositorio incluye un `Makefile` para facilitar el arranque del backend y el frontend.
+(Con make up + make run_frontend deberían tener lo que necesitan)
+
+
+### ▶️ Docker con contenedores
+
+```bash
+make up
+```
+
+Construye el jar y levanta los contenedores con Docker (incluyendo backend y base de datos).
+
+```bash
+make run
+```
+
+Levanta los contenedores ya construidos (sin hacer rebuild).
+
+```bash
+make down
+```
+
+Detiene y elimina los contenedores de Docker.
+
+```bash
+make purge
+```
+
+Detiene y elimina los contenedores de Docker junto con los volúmenes persistentes.
 
 ### ▶️ Build completo
 
@@ -22,13 +50,15 @@ Este repositorio incluye un `Makefile` para facilitar el arranque del backend y 
 make build
 ```
 
+Instala las dependencias del backend y frontend (útil para preparar el entorno local).
+
 ### ▶️ Solo Backend
 
 ```bash
 make run-backend
 ```
 
-Corre el backend con Spring Boot en:
+Ejecuta el backend localmente con Spring Boot en:
 
 📍 http://localhost:8081
 
@@ -38,9 +68,17 @@ Corre el backend con Spring Boot en:
 make run-frontend
 ```
 
-Levanta la app web con Vite en:
+Inicia el frontend localmente en modo desarrollo en:
 
 📍 http://localhost:8080
+
+### ▶️ Construcción del JAR
+
+```bash
+make jar
+```
+
+Construye el jar del backend y lo copia con un nombre fijo para Docker.
 
 ℹ️ En macOS se abren automáticamente en terminales separadas.
 
@@ -66,8 +104,6 @@ El backend contiene tests de integración para:
 El backend sigue una estructura basada en capas (Controller, Service, Repository, Domain, DTO, Mapper).
 
 El frontend usa **React + Vite**.
-
-El proyecto está preparado para ser dockerizado y escalar.
 
 ---
 

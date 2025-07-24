@@ -4,6 +4,8 @@ import com.lemon.taskmanager.exceptions.ComponentNotFoundException;
 import com.lemon.taskmanager.exceptions.TaskAssignmentNotAllowedException;
 import com.lemon.taskmanager.exceptions.TaskNotFoundException;
 import com.lemon.taskmanager.factory.UserTestFactory;
+import com.lemon.taskmanager.mapper.ComponentMapper;
+import com.lemon.taskmanager.mapper.ProjectMapper;
 import com.lemon.taskmanager.mapper.TaskMapper;
 import com.lemon.taskmanager.tasks.controller.dto.CreateTaskRequest;
 import com.lemon.taskmanager.tasks.domain.Task;
@@ -30,6 +32,8 @@ class TaskServiceTest {
 
     private TaskRepository taskRepository;
     private TaskMapper taskMapper;
+    private ComponentMapper componentMapper;
+    private ProjectMapper projectMapper;
     private TaskService taskService;
     private ComponentRepository componentRepository;
     private UserService userService;
@@ -38,9 +42,11 @@ class TaskServiceTest {
     void setUp() {
         taskRepository = mock(TaskRepository.class);
         taskMapper = mock(TaskMapper.class);
+        componentMapper = mock(ComponentMapper.class);
+        projectMapper = mock(ProjectMapper.class);
         componentRepository = mock(ComponentRepository.class);
         userService = mock(UserService.class);
-        taskService = new TaskService(taskRepository, taskMapper, componentRepository, userService);
+        taskService = new TaskService(taskRepository, taskMapper, componentRepository, userService,componentMapper, projectMapper);
     }
 
     @Test

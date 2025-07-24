@@ -4,6 +4,7 @@ import com.lemon.taskmanager.exceptions.ComponentNotFoundException;
 import com.lemon.taskmanager.exceptions.TaskAssignmentNotAllowedException;
 import com.lemon.taskmanager.exceptions.TaskNotFoundException;
 import com.lemon.taskmanager.mapper.ComponentMapper;
+import com.lemon.taskmanager.mapper.ProjectMapper;
 import com.lemon.taskmanager.mapper.TaskMapper;
 import com.lemon.taskmanager.tasks.controller.dto.CreateTaskRequest;
 import com.lemon.taskmanager.tasks.domain.TaskComponent;
@@ -31,14 +32,21 @@ public class TaskService {
 
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
+    private final ComponentMapper componentMapper;
+    private final ProjectMapper projectMapper;
     private final ComponentRepository componentRepository;
     private final UserService userService;
 
-    public TaskService(TaskRepository taskRepository, TaskMapper taskMapper, ComponentRepository componentRepository, UserService userService) {
+    public TaskService(TaskRepository taskRepository,
+                       TaskMapper taskMapper,
+                       ComponentRepository componentRepository,
+                       UserService userService, ComponentMapper componentMapper, ProjectMapper projectMapper) {
         this.taskRepository = taskRepository;
         this.taskMapper = taskMapper;
         this.componentRepository = componentRepository;
         this.userService = userService;
+        this.componentMapper = componentMapper;
+        this.projectMapper = projectMapper;
 
     }
 
@@ -104,7 +112,7 @@ public class TaskService {
 
         ComponentEntity componentEntity = componentRepository.findById(request.componentId())
                 .orElseThrow(() -> new ComponentNotFoundException(request.componentId()));
-        TaskComponent taskComponent = ComponentMapper.toDomain(componentEntity);
+        TaskComponent taskComponent = componentMapper.toDomain(componentEntity);
 
         User assignee = null;
         if (request.assigneeId() != null) {
