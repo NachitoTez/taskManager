@@ -6,6 +6,7 @@ import com.lemon.taskmanager.exceptions.TaskNotFoundException;
 import com.lemon.taskmanager.mapper.ComponentMapper;
 import com.lemon.taskmanager.mapper.ProjectMapper;
 import com.lemon.taskmanager.mapper.TaskMapper;
+import com.lemon.taskmanager.mapper.UserMapper;
 import com.lemon.taskmanager.tasks.controller.dto.CreateTaskRequest;
 import com.lemon.taskmanager.tasks.domain.TaskComponent;
 import com.lemon.taskmanager.tasks.domain.Task;
@@ -16,6 +17,7 @@ import com.lemon.taskmanager.tasks.repository.TaskRepository;
 import com.lemon.taskmanager.tasks.repository.model.ComponentEntity;
 import com.lemon.taskmanager.tasks.repository.model.TaskEntity;
 import com.lemon.taskmanager.user.domain.User;
+import com.lemon.taskmanager.user.repository.model.UserEntity;
 import com.lemon.taskmanager.user.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,17 +38,19 @@ public class TaskService {
     private final ProjectMapper projectMapper;
     private final ComponentRepository componentRepository;
     private final UserService userService;
+    private final UserMapper userMapper;
 
     public TaskService(TaskRepository taskRepository,
                        TaskMapper taskMapper,
                        ComponentRepository componentRepository,
-                       UserService userService, ComponentMapper componentMapper, ProjectMapper projectMapper) {
+                       UserService userService, ComponentMapper componentMapper, ProjectMapper projectMapper, UserMapper userMapper) {
         this.taskRepository = taskRepository;
         this.taskMapper = taskMapper;
         this.componentRepository = componentRepository;
         this.userService = userService;
         this.componentMapper = componentMapper;
         this.projectMapper = projectMapper;
+        this.userMapper = userMapper;
 
     }
 
@@ -56,6 +60,13 @@ public class TaskService {
         return taskRepository.findAll().stream()
                 .map(taskMapper::toDomain)
                 .filter(task -> task.canView(user))
+                .collect(Collectors.toList());
+    }
+
+    public List<Task> getAllTasks() {
+
+        return taskRepository.findAll().stream()
+                .map(taskMapper::toDomain)
                 .collect(Collectors.toList());
     }
 
@@ -110,30 +121,36 @@ public class TaskService {
     public Task createTask(CreateTaskRequest request, User creator) {
         LOGGER.info("User '{}' creating task '{}'", creator.getUsername(), request.title());
 
-        ComponentEntity componentEntity = componentRepository.findById(request.componentId())
-                .orElseThrow(() -> new ComponentNotFoundException(request.componentId()));
-        TaskComponent taskComponent = componentMapper.toDomain(componentEntity);
+        // Convertimos el User (autenticado) a una entidad persistida
+        UserEntity creatorEntity = userService.findUserEntityById(creator.getId());
 
-        User assignee = null;
+        UserEntity assigneeEntity = null;
         if (request.assigneeId() != null) {
-            assignee = userService.findUserById(request.assigneeId());
+            assigneeEntity = userService.findUserEntityById(request.assigneeId());
+            // Validación de proyecto omitida (por ahora)
         }
 
+        // Armamos Task con domain objects
         Task task = new Task(
                 UUID.randomUUID(),
                 request.title(),
                 request.description(),
                 creator,
-                assignee,
-                taskComponent
+                assigneeEntity != null ? userMapper.toDomain(assigneeEntity) : null,
+                null // TaskComponent está desactivado momentáneamente
         );
         task.setStatus(TaskStatus.BACKLOG);
 
+        // Mapeo: usar entidades persistidas al construir TaskEntity
         TaskEntity entity = taskMapper.toEntity(task);
+        entity.setCreatedBy(creatorEntity);
+        entity.setAssignedTo(assigneeEntity);
+
         TaskEntity saved = taskRepository.save(entity);
 
         return taskMapper.toDomain(saved);
     }
+
 
 
 }

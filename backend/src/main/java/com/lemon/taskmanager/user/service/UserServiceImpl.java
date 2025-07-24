@@ -2,6 +2,8 @@ package com.lemon.taskmanager.user.service;
 
 import com.lemon.taskmanager.exceptions.UserNotFoundException;
 import com.lemon.taskmanager.mapper.UserMapper;
+import com.lemon.taskmanager.tasks.repository.ProjectRepository;
+import com.lemon.taskmanager.tasks.repository.model.ProjectEntity;
 import com.lemon.taskmanager.user.domain.User;
 import com.lemon.taskmanager.user.repository.UserRepository;
 import com.lemon.taskmanager.user.repository.model.UserEntity;
@@ -9,7 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -18,10 +23,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final ProjectRepository projectRepository;
 
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, ProjectRepository projectRepository) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.projectRepository = projectRepository;
     }
 
     @Override
@@ -73,6 +80,39 @@ public class UserServiceImpl implements UserService {
         LOGGER.info("Saving new UserEntity with username '{}'", userEntity.getUsername());
         return userRepository.save(userEntity);
     }
+
+    @Override
+    public List<User> getProjectMembers(UUID userId) {
+        LOGGER.info("Fetching all users from the projects where user #{} participates", userId);
+
+        List<ProjectEntity> projects = projectRepository.findAllByMemberId(userId);
+
+        Set<UserEntity> allUsers = projects.stream()
+                .flatMap(p -> p.getMembers().stream())
+                .collect(Collectors.toSet());
+
+        List<User> domainUsers = allUsers.stream()
+                .map(userMapper::toDomain)
+                .toList();
+
+        LOGGER.info("Found {} users participating with user #{}", domainUsers.size(), userId);
+        return domainUsers;
+    }
+
+    //TODO esto no lo iba a hacer asi pero como no hay proyect necesito a todos los usuarios
+    @Override
+    public List<User> findAllUsers() {
+
+        List<UserEntity> users = userRepository.findAll();
+
+        List<User> domainUsers = users.stream()
+                .map(userMapper::toDomain)
+                .toList();
+
+        LOGGER.info("Found {} users participating with user", domainUsers.size());
+        return domainUsers;
+    }
+
 
     private User getDomainUserOrThrow(UUID userId, String contextForLogging) {
         return userRepository.findById(userId)

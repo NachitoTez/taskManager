@@ -1,5 +1,7 @@
 package com.lemon.taskmanager.user.repository.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.lemon.taskmanager.tasks.domain.Role;
 import jakarta.persistence.*;
 
 import java.util.UUID;
@@ -15,20 +17,21 @@ public class UserEntity {
     @Column(unique = true, nullable = false)
     private String username;
 
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
 
-    private String role;
-
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
 
     public UserEntity() {}
 
-    public UserEntity(String username, String password, String role) {
+    public UserEntity(String username, String hashedPassword, Role role) {
         this.username = username;
-        this.password = password;
+        this.password = hashedPassword;
         this.role = role;
     }
-
 
     public UUID getId() {
         return id;
@@ -42,21 +45,24 @@ public class UserEntity {
         this.username = username;
     }
 
-    //TODO por ahora para testear voy a tenerlo así, pero no me gusta este approach
-    public String getPassword() {
-        return password;
+    public void setEncryptedPassword(String hashedPassword) {
+        this.password = hashedPassword;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setId(UUID id) {
+        this.id = id;
     }
 
-    public void setRole(String role) {
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
         this.role = role;
     }
 
-    public String getRole() {
-        return role;
+    public boolean passwordMatches(String rawPassword, org.springframework.security.crypto.password.PasswordEncoder encoder) {
+        return encoder.matches(rawPassword, this.password);
     }
 }
-//TODO cambiar todos los id con uuid

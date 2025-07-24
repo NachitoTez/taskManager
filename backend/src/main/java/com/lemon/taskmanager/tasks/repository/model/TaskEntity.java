@@ -32,13 +32,15 @@ public class TaskEntity {
     @JoinColumn(name = "assigned_to_id")
     private UserEntity assignedTo;
 
-    @ManyToOne
-    @JoinColumn(name = "component_id")
-    private ComponentEntity component;
+//TODO esto lo comento porque no termine la logica de proyecto + componente. Para que no frene las pruebas
 
-    public ComponentEntity getComponent() {
-        return component;
-    }
+//    @ManyToOne
+//    @JoinColumn(name = "component_id")
+//    private ComponentEntity component;
+
+//    public ComponentEntity getComponent() {
+//        return component;
+//    }
 
     public TaskEntity() {}
 
@@ -48,7 +50,7 @@ public class TaskEntity {
         this.status = status;
         this.createdBy = createdBy;
         this.assignedTo = assignedTo;
-        this.component = component;
+//        this.component = component;
     }
 
 
@@ -78,5 +80,13 @@ public class TaskEntity {
 
     public UserEntity getAssignedTo() {
         return assignedTo;
+    }
+
+    public void setAssignedTo(UserEntity assignedTo) {
+        this.assignedTo = assignedTo;
+    }
+
+    public void setCreatedBy(UserEntity createdBy) {
+        this.createdBy = createdBy;
     }
 }

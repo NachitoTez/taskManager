@@ -147,6 +147,13 @@ Para ver más en profundidad:
 
 ---
 
+
+## Comentario final
+
+Creo que con un poco más de tiempo podría haber llegado a terminar todos los pendientes, sobretodo los del front.
+Fue un challenge que me entretuvo y me permitió tirar mucho de lo que se en un repo.
+Seguro me va a sirve si quiero copiar algun ejemplo/pedazo de codigo.
+
 ## 🧑‍🎓 Autor
 
 Ignacio Ramírez · [LinkedIn](https://www.linkedin.com/in/ignacio-ramirez-guembe/) · [GitHub](https://github.com/NachitoTez/taskManager)

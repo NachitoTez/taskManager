@@ -1,14 +1,20 @@
 package com.lemon.taskmanager.auth.controller;
 
 import com.lemon.taskmanager.auth.controller.dto.AuthRequest;
+import com.lemon.taskmanager.auth.controller.dto.EnvironmentResponse;
 import com.lemon.taskmanager.auth.controller.dto.RegisterRequest;
 import com.lemon.taskmanager.auth.controller.dto.AuthResponse;
 import com.lemon.taskmanager.auth.service.AuthService;
+import com.lemon.taskmanager.user.domain.User;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/auth")
@@ -35,4 +41,11 @@ public class AuthController {
         AuthResponse response = authService.register(request);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/environment")
+    public EnvironmentResponse getEnvironment(@AuthenticationPrincipal User user) {
+        LOGGER.info("GET /auth/environment requested by '{}'", user.getUsername());
+        return authService.getEnvironment(user);
+    }
+
 }

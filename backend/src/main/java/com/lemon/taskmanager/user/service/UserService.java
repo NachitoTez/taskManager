@@ -3,6 +3,7 @@ package com.lemon.taskmanager.user.service;
 import com.lemon.taskmanager.user.domain.User;
 import com.lemon.taskmanager.user.repository.model.UserEntity;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface UserService {
@@ -17,4 +18,10 @@ public interface UserService {
     boolean existsByUsername(String username);
 
     UserEntity save(UserEntity userEntity);
+
+    List<User> getProjectMembers(UUID userId);
+
+
+    //TODO esto no lo iba a hacer asi pero como no hay proyect necesito a todos los usuarios
+    List<User> findAllUsers();
 }

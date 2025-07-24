@@ -15,7 +15,6 @@ export default function CreateModal({ type, onClose, onSuccess }: Props) {
         name: '',
         title: '',
         description: '',
-        componentName: '',
         projectName: '',
         assign: ''
     });
@@ -36,7 +35,6 @@ export default function CreateModal({ type, onClose, onSuccess }: Props) {
                 await createTask({
                     title: form.title,
                     description: form.description,
-                    componentId: form.componentName,
                     assign: "",
                 });
             }
@@ -94,13 +92,6 @@ export default function CreateModal({ type, onClose, onSuccess }: Props) {
                             name="description"
                             value={form.description}
                             onChange={handleChange}
-                        />
-                        <input
-                            placeholder="Component name"
-                            name="componentName"
-                            value={form.componentName}
-                            onChange={handleChange}
-                            required
                         />
                     </>
                 );

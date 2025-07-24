@@ -30,11 +30,23 @@ public class TasksController {
         this.taskMapper = taskMapper;
     }
 
-    @GetMapping
-    public ResponseEntity<List<TaskResponse>> getVisibleTasks(@AuthenticationPrincipal User user) {
-        LOGGER.info("GET /tasks requested by '{}'", user.getUsername());
+    //TODO esto lo comento porque como no está habilitada la parte de proyectos no tiene sentido
+//    @GetMapping
+//    public ResponseEntity<List<TaskResponse>> getVisibleTasks(@AuthenticationPrincipal User user) {
+//        LOGGER.info("GET /tasks requested by '{}'", user.getUsername());
+//
+//        List<TaskResponse> responses = taskService.getVisibleTasks(user).stream()
+//                .map(taskMapper::toResponse)
+//                .toList();
+//
+//        return ResponseEntity.ok(responses);
+//    }
 
-        List<TaskResponse> responses = taskService.getVisibleTasks(user).stream()
+    //TODO este lo agrego para salir del apuro. Podría implementarle una cache pero no vale la pena
+    @GetMapping
+    public ResponseEntity<List<TaskResponse>> getAllTasks() {
+
+        List<TaskResponse> responses = taskService.getAllTasks().stream()
                 .map(taskMapper::toResponse)
                 .toList();
 

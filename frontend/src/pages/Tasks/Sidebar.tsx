@@ -1,8 +1,10 @@
 import {  useNavigate } from 'react-router-dom';
 import logo from "../../assets/lemon.svg";
+import {useAuth} from "../../context/useAuth.ts";
 
 function Sidebar() {
     const navigate = useNavigate();
+    const { logout } = useAuth();
 
     return (
         <div className="sidebar">
@@ -18,14 +20,19 @@ function Sidebar() {
                 </div>
 
                 <div className={"nav-item"}
-                    onClick={() => navigate('/components')}>
+                     onClick={() => navigate('/components')}>
                     <h3>Components</h3>
                 </div>
 
                 <div className={"nav-item"}
-                    onClick={() => navigate('/tasks')}>
+                     onClick={() => navigate('/tasks')}>
                     <h3>Tasks</h3>
                 </div>
+
+                <div className="userArea">
+                    <button onClick={logout}>Cerrar sesión</button>
+                </div>
+
             </nav>
         </div>
     );

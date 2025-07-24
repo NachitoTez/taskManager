@@ -8,6 +8,6 @@ import java.util.UUID;
 public record CreateTaskRequest(
         @NotBlank String title,
         @NotBlank String description,
-        @NotNull UUID componentId,
+//        @NotNull UUID componentId,
         UUID assigneeId
 ) {}

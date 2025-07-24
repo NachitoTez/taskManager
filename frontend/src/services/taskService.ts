@@ -9,7 +9,6 @@ export async function getTasks(): Promise<Task[]> {
 export type CreateTaskRequest = {
     title: string;
     description: string;
-    componentId: string;
     assign: string;
 };
 

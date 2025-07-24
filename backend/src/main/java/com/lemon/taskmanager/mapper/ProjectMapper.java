@@ -7,16 +7,25 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProjectMapper {
 
+    private final UserMapper userMapper;
+
+
+    public ProjectMapper(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
+
     public Project toDomain(ProjectEntity entity) {
         return new Project(
                 entity.getId(),
-                entity.getName()
+                entity.getName(),
+                userMapper.toDomain(entity.getCreator())
         );
     }
 
     public ProjectEntity toEntity(Project domain) {
         return new ProjectEntity(
                 domain.getId(),
+                userMapper.toEntity(domain.getCreator()),
                 domain.getName()
         );
     }

@@ -24,8 +24,8 @@ public class TaskMapper {
                 entity.getTitle(),
                 entity.getDescription(),
                 userMapper.toDomain(entity.getCreatedBy()),
-                entity.getAssignedTo() != null ? userMapper.toDomain(entity.getAssignedTo()) : null,
-                entity.getComponent() != null ? componentMapper.toDomain(entity.getComponent()) : null
+                entity.getAssignedTo() != null ? userMapper.toDomain(entity.getAssignedTo()) : null, null
+//                entity.getComponent() != null ? componentMapper.toDomain(entity.getComponent()) : null
         );
     }
 
@@ -35,8 +35,8 @@ public class TaskMapper {
                 task.getDescription(),
                 task.getStatus(),
                 userMapper.toEntity(task.getCreatedBy()),
-                task.getAssignedTo() != null ? userMapper.toEntity(task.getAssignedTo()) : null,
-                task.getComponent() != null ? componentMapper.toEntity(task.getComponent(), projectMapper.toEntity(task.getComponent().getProject())) : null
+                task.getAssignedTo() != null ? userMapper.toEntity(task.getAssignedTo()) : null, null
+//                task.getComponent() != null ? componentMapper.toEntity(task.getComponent(), projectMapper.toEntity(task.getComponent().getProject())) : null
         );
     }
 
@@ -47,8 +47,8 @@ public class TaskMapper {
                 task.getDescription(),
                 task.getStatus(),
                 task.getCreatedBy().getUsername(),
-                task.getAssignedTo() != null ? task.getAssignedTo().getUsername() : null,
-                task.getComponent() != null ? task.getComponent().getName() : null
+                task.getAssignedTo() != null ? task.getAssignedTo().getUsername() : null, null
+//                task.getComponent() != null ? task.getComponent().getName() : null
         );
     }
 }

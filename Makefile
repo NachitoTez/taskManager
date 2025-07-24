@@ -2,7 +2,7 @@ up: build jar
 	docker compose up --build --remove-orphans
 
 run-frontend:
-	cd frontend && npm run dev
+	cd frontend && npm install && npm run dev
 
 
 #Local:

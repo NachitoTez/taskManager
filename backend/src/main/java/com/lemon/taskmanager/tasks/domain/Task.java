@@ -12,7 +12,9 @@ public class Task {
     private final String description;
     private final User createdBy;
     private User assignedTo;
-    private final TaskComponent taskComponent;
+    //TODO esto lo comento porque no termine la logica de proyecto + componente. Para que no frene las pruebas
+
+    //    private final TaskComponent taskComponent;
     private TaskStatus status = TaskStatus.BACKLOG;
     private TaskStatus previousStatus;
 
@@ -22,7 +24,7 @@ public class Task {
         this.description = description;
         this.createdBy = createdBy;
         this.assignedTo = assignedTo;
-        this.taskComponent = taskComponent;
+//        this.taskComponent = taskComponent;
     }
 
     public UUID getId() { return id; }
@@ -35,7 +37,7 @@ public class Task {
 
     public User getAssignedTo() { return assignedTo; }
 
-    public TaskComponent getComponent() { return taskComponent; }
+//    public TaskComponent getComponent() { return taskComponent; }
 
     public TaskStatus getStatus() { return status; }
 
@@ -63,8 +65,9 @@ public class Task {
     //TODO creo que tengo que corregirlo. Me gustaría armar la clase Team y validar eso acá
     public boolean canView(User user) {
         return user.getId().equals(createdBy.getId()) ||
-                (assignedTo != null && user.getId().equals(assignedTo.getId())) ||
-                taskComponent.getProject().isMember(user);
+                (assignedTo != null && user.getId().equals(assignedTo.getId())
+//                || taskComponent.getProject().isMember(user
+                );
     }
 
 

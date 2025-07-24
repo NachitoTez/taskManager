@@ -1,6 +1,6 @@
 # 🧠 Lemon Task Manager - Backend (Java + Spring Boot)
 
-Este backend fue desarrollado como parte del challenge técnico de Lemon, utilizando Spring Boot con Java 21. A continuación se documentan las decisiones técnicas, arquitectura utilizada, cómo correr el proyecto y cómo se implementaron los requerimientos.
+Este backend fue desarrollado utilizando Spring Boot con Java 21. A continuación se documentan las decisiones técnicas, arquitectura utilizada, cómo correr el proyecto y cómo se implementaron los requerimientos.
 
 ## ⚙️ Tecnologías principales
 
@@ -8,9 +8,10 @@ Este backend fue desarrollado como parte del challenge técnico de Lemon, utiliz
 - **Maven Wrapper** (`./mvnw`)
 - **JWT (jjwt)** para autenticación segura
 - **Spring Security**
-- **Spring Data JPA + H2 (en memoria)**
+- **Spring Data JPA + PostgreSQL (productivo) / H2 (test)**
 - **Logback** con logs custom
 - **JUnit 5 + Mockito** para testing
+- **Docker + Docker Compose** para levantar la base de datos y el backend
 
 ## 📁 Estructura del proyecto
 
@@ -20,7 +21,7 @@ src/main/java/com/lemon/taskmanager
 ├── config/              # Configuración de seguridad (SecurityFilterChain, CORS)
 ├── exceptions/          # Manejador global y errores personalizados
 ├── tasks/               # Endpoints y lógica para manejar tareas
-├── userEntity/                # Entidad User y acceso a datos
+├── user/                # Entidad User, UserController y servicio
 ├── utils/               # Clases auxiliares (ej. métodos JWT)
 └── TaskmanagerApplication.java
 ```
@@ -29,6 +30,7 @@ src/main/java/com/lemon/taskmanager
 
 - El login y registro devuelven un **JWT** que debe enviarse en cada request bajo el header `Authorization: Bearer <token>`.
 - Se implementó un filtro `JwtAuthenticationFilter` para validar tokens antes de ejecutar cualquier endpoint.
+- CORS habilitado desde frontend (`http://localhost:5173`)
 - Si el token es inválido o está ausente, se devuelve:
   - `401 Unauthorized` si no se proveyó token
   - `403 Forbidden` si se proveyó un token inválido
@@ -36,7 +38,7 @@ src/main/java/com/lemon/taskmanager
 ## ✅ Tests implementados
 
 - **Test de integración**: Validan que `/tasks` devuelve `401` sin token y `200` con token.
-- **Mockito**: Usado para testear servicios y lógica de negocio de forma aislada (ej. login, register, authService).
+- **Mockito**: Usado para testear servicios como AuthService, UserService, etc.
 
 ## 🔧 Logs personalizados
 
@@ -52,43 +54,54 @@ Se definió un `logback.xml` con el siguiente formato:
 
 ## 🧪 Base de datos
 
-- Para simplificar la ejecución local, se usó **H2 en memoria** (`jdbc:h2:mem:taskdb`)
-- No requiere instalación
-- Se accede a la consola desde `/h2-console`
-- Se puede migrar fácilmente a PostgreSQL o MySQL agregando el datasource en `application.properties`
+- **PostgreSQL en entorno productivo (via Docker)**
+- **H2 en memoria en los tests**
+- `data.sql` para datos iniciales
+- Se validan las relaciones entre `Users`, `Tasks`, `Projects` y `Components`
 
 ## 🚀 Cómo correr el back
 
 Este proyecto usa **Maven Wrapper**, por lo que no es necesario tener Maven instalado globalmente.
 
-### En Linux / macOS:
+### Opción 1: Usar Docker con Makefile
+
+```bash
+make up         # Levanta backend + DB (requiere Docker)
+make down       # Baja contenedores
+```
+
+### Opción 2: Correr manualmente en local
 
 ```bash
 ./mvnw clean install
 ./mvnw spring-boot:run
 ```
 
-### En Windows:
-
-```bash
-mvnw.cmd clean install
-mvnw.cmd spring-boot:run
-```
-
 Corre en: `http://localhost:8081`
 
-## 🔄 Endpoints
+## 🔄 Endpoints principales
 
-| Método | Ruta             | Descripción                       | Protegido |
-|--------|------------------|-----------------------------------|-----------|
-| POST   | `/auth/register` | Crea un usuario                   | ❌        |
-| POST   | `/auth/login`    | Devuelve JWT                      | ❌        |
-| GET    | `/tasks`         | Lista tareas                      | ✅        |
-| POST   | `/tasks`         | Crea una nueva tarea              | ✅        |
+| Método | Ruta                     | Descripción                               | Protegido |
+|--------|--------------------------|-------------------------------------------|-----------|
+| POST   | `/auth/register`         | Crea un usuario                           | ❌        |
+| POST   | `/auth/login`            | Devuelve JWT                              | ❌        |
+| GET    | `/auth/environment`      | Devuelve info básica del usuario          | ✅        |
+| GET    | `/users/project-members` | Lista los miembros de los proyectos       | ✅        |
+| GET    | `/tasks`                 | Lista tareas visibles                     | ✅        |
+| POST   | `/tasks`                 | Crea una nueva tarea                      | ✅        |
+| GET    | `/tasks/{id}`            | Obtiene una tarea por ID                  | ✅        |
+| PATCH  | `/tasks/{id}/status`     | Cambia el estado de una tarea             | ✅        |
+| PATCH  | `/tasks/{id}/assign`     | Asigna un usuario a una tarea             | ✅        |
 
-## 📦 Consideraciones adicionales
+## ✏️ Funcionalidades implementadas
 
-- Se planea agregar `Dockerfile` para facilitar la ejecución
-- Todas las entidades están desacopladas usando **DTOs**
-- La arquitectura respeta el patrón **controller → service → repository**
-- El código es fácilmente escalable a múltiples usuarios y roles
+- Asignación de usuarios a tareas (crear y update)
+- Validación de permisos según rol (`MANAGER`, `MEMBER`)
+- Validación de miembros de proyecto al asignar tareas
+- Endpoint `/auth/environment` para poblar `environment.ts`
+- UserController que expone los miembros disponibles del proyecto
+- Arquitectura limpia: mappers, dtos, dominio desacoplado de entidad
+- Soporte para edición de estado, asignación, visualización de tareas
+- Validación granular: `canEdit`, `canView`, `assignTo(...)`
+- Proyecto y componentes también se pueden crear (servicio en progreso)
+

@@ -8,6 +8,8 @@ import com.lemon.taskmanager.tasks.domain.Task;
 import com.lemon.taskmanager.tasks.domain.TaskStatus;
 import com.lemon.taskmanager.user.domain.User;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 public class TaskTestFactory {
@@ -19,7 +21,7 @@ public class TaskTestFactory {
                 "Realign crystal array in Death Star",
                 creator,
                 assignee,
-                componentEngineering()
+                componentEngineering(creator)
         );
         task.setStatus(status);
         return task;
@@ -32,7 +34,7 @@ public class TaskTestFactory {
                 "Make sure they shine before the next inspection",
                 creator,
                 assignee,
-                componentLogistics()
+                componentLogistics(creator)
         );
     }
 
@@ -44,21 +46,31 @@ public class TaskTestFactory {
         return simpleTask(TaskStatus.BACKLOG, creator, null);
     }
 
-    public static TaskComponent componentEngineering() {
-        return new TaskComponent(randomId(), "Engineering", projectDeathStar());
+    public static TaskComponent componentEngineering(User creator) {
+        return new TaskComponent(randomId(), "Engineering", projectDeathStar(creator));
     }
 
-    public static TaskComponent componentLogistics() {
-        return new TaskComponent(randomId(), "Imperial Logistics", projectDeathStar());
+    public static TaskComponent componentLogistics(User creator) {
+        return new TaskComponent(randomId(), "Imperial Logistics", projectDeathStar(creator));
     }
 
-    public static Project projectDeathStar() {
-        return new Project(randomId(), "Death Star");
+
+    public static Project projectDeathStar(User creator) {
+        Project project = new Project(randomId(), "Death Star", creator);
+        project.addMember(creator);
+        return project;
     }
 
     public static Project projectWithMembers(User... users) {
-        return new Project(randomId(), "Starkiller Base");
+        User creator = users.length > 0 ? users[0] : null;
+        Project project = new Project(randomId(), "Starkiller Base", creator);
+
+        for (User u : users) {
+            project.addMember(u);
+        }
+        return project;
     }
+
 
     // -------- DTOs --------
 
@@ -66,16 +78,16 @@ public class TaskTestFactory {
         return new CreateTaskRequest(
                 "Install hyperdrive",
                 "Connect power lines and run diagnostics",
-                taskComponent.getId(),
+//                taskComponent.getId(),
                 assignee.getId()
         );
     }
 
-    public static CreateTaskRequest createRequestWithoutAssignee(UUID id) {
+    public static CreateTaskRequest createRequestWithoutAssignee(UUID componentId) {
         return new CreateTaskRequest(
                 "Calibrate sensors",
                 "Use protocol outlined in imperial manual section 3-B",
-                id,
+//                componentId,
                 null
         );
     }
